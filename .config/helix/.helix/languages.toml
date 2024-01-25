@@ -1,0 +1,10 @@
+[[language]]
+name = "rust"
+auto-format = true
+
+[language.config]
+checkOnSave = { command = "clippy" }
+
+[[grammer]]
+name = "rust"
+source = { git = "https://github.com/tree-sitter/tree-sitter-rust" }

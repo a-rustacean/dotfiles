@@ -36,6 +36,12 @@ sudo apt upgrade -y
 
 sudo apt install zsh helix git tmux git-lfs gh -y
 
+# tmux
+
+rm -rf $HOME/.tmux.conf
+
+sudo ln -s $dotfiles_path/.tmux.conf $HOME/.tmux.conf
+
 # zsh & omz
 
 rm -rf $HOME/.oh-my-zsh

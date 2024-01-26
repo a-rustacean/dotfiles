@@ -77,6 +77,7 @@ curl -o $font_name https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fo
 cp $font_name $HOME/.fonts/$font_name
 sudo cp $font_name /usr/local/share/fonts/$font_name
 sudo fc-cache -fv
+rm -rf $font_name
 
 # cleanup
 

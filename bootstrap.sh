@@ -74,6 +74,10 @@ font_name='JetBrainsMono Nerd Font.ttf'
 
 curl -o $font_name https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMonoNerdFontMono-Regular.ttf
 
+if [ ! -d "$HOME/.fonts" ]; then
+    mkdir -p "$HOME/.fonts"
+fi
+
 cp $font_name $HOME/.fonts/$font_name
 sudo cp $font_name /usr/local/share/fonts/$font_name
 sudo fc-cache -fv

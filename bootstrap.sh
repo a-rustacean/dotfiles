@@ -45,7 +45,7 @@ rm -rf $HOME/.p10k.zsh
 
 git clone --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $HOME/.oh-my-zsh
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
 rm -rf $HOME/.zshrc
 rm -rf $HOME/.zshenv
@@ -53,6 +53,8 @@ rm -rf $HOME/.zshenv
 sudo ln -s $dotfiles_path/.zshrc $HOME/.zshrc
 sudo ln -s $dotfiles_path/.zshenv $HOME/.zshenv
 sudo ln -s $dotfiles_path/.p10k.zsh $HOME/.p10k.zsh
+
+mkdir $HOME/.zfunc
 
 # helix
 
@@ -91,8 +93,12 @@ git-lfs install
 # rust
 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-~/.cargo/env
+
+$HOME/.cargo/env
+
 rustup toolchain install nightly
+rustup completions zsh cargo > $HOME/.zfunc/_cargo
+rustup component add rust-analyzer
 
 # installing font
 

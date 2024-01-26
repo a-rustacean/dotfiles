@@ -65,10 +65,12 @@ sudo apt install helix -y
 rm -rf $HOME/.config/cava
 rm -rf $HOME/.config/helix
 rm -rf $HOME/.config/neofetch
+rm -rf $HOME/.config/helix-lite
 
 sudo ln -s $dotfiles_path/.config/cava $HOME/.config/cava
 sudo ln -s $dotfiles_path/.config/helix $HOME/.config/helix
 sudo ln -s $dotfiles_path/.config/neofetch $HOME/.config/neofetch
+sudo ln -s $dotfiles_path/.config/helix-lite $HOME/.config/helix-lite
 
 # nvm, node & npm
 

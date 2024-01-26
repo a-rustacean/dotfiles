@@ -32,6 +32,7 @@ fi
 
 alias zshconf="hx ~/.zshrc"
 alias tmux="tmux -u"
+alias hl="hx -c $HOME/.config/helix-lite/config.toml"
 
 # initialize p10k
 

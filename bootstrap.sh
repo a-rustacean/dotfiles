@@ -2,6 +2,32 @@
 
 dotfiles_path=$(pwd)
 
+# utility functions
+
+create_dir() {
+  if [ ! -d $1 ]; then
+    mkdir -p $1
+  fi
+}
+
+install_font() {
+  font_name='$1.ttf'
+  font_path=$2
+
+  curl -L -o $font_name "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/$font_path.ttf"
+
+  create_dir "$HOME/.fonts"
+  create_dir "$HOME/.local/share/fonts"
+
+  cp $font_name $HOME/.fonts/
+  cp $font_name $HOME/.local/share/fonts/
+  sudo cp $font_name /usr/local/share/fonts/
+  sudo cp $font_name /usr/share/fonts/
+
+  sudo fc-cache -fv
+  rm -rf $font_name
+}
+
 # apt
 
 sudo add-apt-repository ppa:maveonair/helix-editor -y
@@ -70,18 +96,7 @@ rustup toolchain install nightly
 
 # installing font
 
-font_name='JetBrainsMono Nerd Font.ttf'
-
-curl -o $font_name https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMonoNerdFontMono-Regular.ttf
-
-if [ ! -d "$HOME/.fonts" ]; then
-    mkdir -p "$HOME/.fonts"
-fi
-
-cp $font_name $HOME/.fonts/$font_name
-sudo cp $font_name /usr/local/share/fonts/$font_name
-sudo fc-cache -fv
-rm -rf $font_name
+install_font "JetBrainsMono-Nerd-Font" "JetBrainsMono/Ligatures/Regular/JetBrainsMonoNerdFontMono-Regular"
 
 # cleanup
 

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+dotfiles_path=$(pwd)
+
 # apt
 
 sudo add-apt-repository ppa:maveonair/helix-editor -y
@@ -22,9 +24,9 @@ git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTO
 rm -rf $HOME/.zshrc
 rm -rf $HOME/.zshenv
 
-sudo ln -s $HOME/.dotfiles/.zshrc $HOME/.zshrc
-sudo ln -s $HOME/.dotfiles/.zshenv $HOME/.zshenv
-sudo ln -s $HOME/.dotfiles/.p10k.zsh $HOME/.p10k.zsh
+sudo ln -s $dotfiles_path/.zshrc $HOME/.zshrc
+sudo ln -s $dotfiles_path/.zshenv $HOME/.zshenv
+sudo ln -s $dotfiles_path/.p10k.zsh $HOME/.p10k.zsh
 
 # helix
 
@@ -36,9 +38,9 @@ rm -rf $HOME/.config/cava
 rm -rf $HOME/.config/helix
 rm -rf $HOME/.config/neofetch
 
-sudo ln -s $HOME/.dotfiles/.config/cava $HOME/.config/cava
-sudo ln -s $HOME/.dotfiles/.config/helix $HOME/.config/helix
-sudo ln -s $HOME/.dotfiles/.config/neofetch $HOME/.config/neofetch
+sudo ln -s $dotfiles_path/.config/cava $HOME/.config/cava
+sudo ln -s $dotfiles_path/.config/helix $HOME/.config/helix
+sudo ln -s $dotfiles_path/.config/neofetch $HOME/.config/neofetch
 
 # nvm, node & npm
 

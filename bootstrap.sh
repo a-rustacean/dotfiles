@@ -1,18 +1,69 @@
 #!/bin/bash
 
+# apt
+
+sudo add-apt-repository ppa:maveonair/helix-editor -y
+sudo apt update -y
+sudo apt upgrade -y
+
+sudo apt install zsh helix git tmux git-lfs gh -y
+
+# zsh & omz
+
+rm -rf $HOME/.oh-my-zsh
+rm -rf $HOME/.zshrc
+rm -rf $HOME/.zshenv
+rm -rf $HOME/.p10k.zsh
+
+git clone --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $HOME/.oh-my-zsh
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+rm -rf $HOME/.zshrc
+rm -rf $HOME/.zshenv
+
+sudo ln -s $HOME/.dotfiles/.zshrc $HOME/.zshrc
+sudo ln -s $HOME/.dotfiles/.zshenv $HOME/.zshenv
+sudo ln -s $HOME/.dotfiles/.p10k.zsh $HOME/.p10k.zsh
+
+# helix
+
+sudo apt install helix -y
+
 # .config/
+
+rm -rf $HOME/.config/cava
+rm -rf $HOME/.config/helix
+rm -rf $HOME/.config/neofetch
 
 sudo ln -s $HOME/.dotfiles/.config/cava $HOME/.config/cava
 sudo ln -s $HOME/.dotfiles/.config/helix $HOME/.config/helix
 sudo ln -s $HOME/.dotfiles/.config/neofetch $HOME/.config/neofetch
 
-# zsh & omz
+# nvm, node & npm
 
-sudo ln -s $HOME/.dotfiles/.zshrc $HOME/.zshrc
-sudo ln -s $HOME/.dotfiles/.zshenv $HOME/.zshenv
-sudo ln -s $HOME/.dotfiles/.p10k.zsh $HOME/.p10k.zsh
-sudo ln -s $HOME/.dotfiles/.oh-my-zsh $HOME/.oh-my-zsh
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
+
+nvm install --lts
 
 # git
 
+rm -rf $HOME/.gitconfig
+
 sudo ln -s $HOME/.dotfiles/.gitconfig $HOME/.gitconfig
+
+# git lfs
+
+git-lfs install
+
+# rust
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# cleanup
+
+sudo apt autoremove -y

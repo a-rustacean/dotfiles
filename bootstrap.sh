@@ -175,6 +175,7 @@ gh extension install meiji163/gh-notify
 # obsidian
 
 curl -L -o "$HOME/obsidian.AppImage" "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.5.3/Obsidian-1.5.3.AppImage"
+chmod u+x "$HOME/obsidian.AppImage"
 
 # cleanup
 

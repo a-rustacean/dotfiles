@@ -22,11 +22,8 @@ source $ZSH/oh-my-zsh.sh
 
 # editor
 
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='hx'
-else
-  export EDITOR='vi'
-fi
+export EDITOR="hx"
+export VISUAL="hx"
 
 # aliases
 

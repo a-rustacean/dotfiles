@@ -1,4 +1,4 @@
-theme = "github_transparent"
+theme = "catppuccin_mocha"
 
 [editor]
 line-number = "relative"

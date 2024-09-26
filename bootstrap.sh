@@ -35,7 +35,8 @@ sudo apt upgrade -y
 
 sudo apt install zsh git tmux git-lfs gh cmake libssl-dev pkg-config \
   libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev \
-  python3 gzip scdoc gcc g++ gnome-tweaks openjdk-11-jdk openjdk-11-jre -y
+  python3 gzip scdoc gcc g++ gnome-tweaks openjdk-11-jdk openjdk-11-jre \
+  clangd-12 libglfw3 libglfw3-dev -y
 
 # tmux
 

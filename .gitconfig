@@ -1,6 +1,7 @@
 [user]
 	name = Dilshad
 	email = a-rustacean@outlook.com
+	signingkey = 95BBBA7922AE1CEC
 [credential "https://github.com"]
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
@@ -16,3 +17,5 @@
 	editor = hx
 [init]
 	defaultBranch = main
+[commit]
+	gpgsign = true

@@ -66,7 +66,7 @@
         sha256 = "sha256-85aw9OM2pQPsWklXjuNOzp9El1MsNb+cIiZQVHUzBnk=";
       };
     in {
-      ".p10k.zsh".source = ./.p10k.zsh;
+      ".p10k.zsh".source = ./p10k-zsh;
       ".omz-custom/themes/powerlevel10k" = {
         source = "${zsh-theme-power-level-10k}";
         recursive = true;

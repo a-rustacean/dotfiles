@@ -20,7 +20,6 @@
       rar
       hexyl
       tree
-      lighttpd
       cmake
       docker
       ffmpeg
@@ -45,11 +44,9 @@
       gitui
       # Bash
       bash-language-server
-      # Protobuf
-      protobuf
       # Apps
-      spotify
       discord
+      warp-terminal
     ];
 
     file = let

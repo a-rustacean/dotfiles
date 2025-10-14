@@ -1,5 +1,4 @@
 { config }:
-
 {
   enable = true;
   userName = "Dilshad";
@@ -13,5 +12,7 @@
     key = "95BBBA7922AE1CEC";
     signer = "${config.programs.gpg.package}/bin/gpg2";
   };
-  extraConfig = { init.defaultBranch = "main"; };
+  extraConfig = {
+    init.defaultBranch = "main";
+  };
 }

@@ -1,5 +1,4 @@
 { }:
-
 {
   enable = true;
   defaultEditor = true;
@@ -12,8 +11,17 @@
       file-picker.hidden = false;
 
       statusline = {
-        left = [ "mode" "spinner" "spacer" "spacer" "version-control" ];
-        center = [ "file-base-name" "file-modification-indicator" ];
+        left = [
+          "mode"
+          "spinner"
+          "spacer"
+          "spacer"
+          "version-control"
+        ];
+        center = [
+          "file-base-name"
+          "file-modification-indicator"
+        ];
         right = [
           "diagnostics"
           "selections"

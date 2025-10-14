@@ -1,5 +1,7 @@
-{ config, lib }:
-
+{
+  config,
+  lib,
+}:
 {
   enable = true;
   enableCompletion = true;
@@ -9,7 +11,14 @@
     enable = true;
     custom = "${config.home.homeDirectory}/.omz-custom";
     theme = "powerlevel10k/powerlevel10k";
-    plugins = [ "git" "zsh-autosuggestions" "node" "nvm" "npm" "rust" ];
+    plugins = [
+      "git"
+      "zsh-autosuggestions"
+      "node"
+      "nvm"
+      "npm"
+      "rust"
+    ];
   };
 
   initContent = lib.mkBefore ''

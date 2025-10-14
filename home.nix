@@ -1,10 +1,17 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   home = {
     stateVersion = "25.05";
 
-    shellAliases = { tmux = "${config.programs.tmux.package}/bin/tmux -u"; };    
-    
+    shellAliases = {
+      tmux = "${config.programs.tmux.package}/bin/tmux -u";
+    };
+
     packages = with pkgs; [
       # Font
       nerd-fonts.jetbrains-mono
@@ -55,51 +62,55 @@
       gradle
     ];
 
-    file = let
-      zsh-theme-power-level-10k = pkgs.fetchFromGitHub {
-        owner = "romkatv";
-        repo = "powerlevel10k";
-        rev = "3e2053a9341fe4cf5ab69909d3f39d53b1dfe772";
-        sha256 = "sha256-6tWuayZgQd9pUrD3xKlUSmOFQCgZ96G3DB8ojgZ/a78=";
+    file =
+      let
+        zsh-theme-power-level-10k = pkgs.fetchFromGitHub {
+          owner = "romkatv";
+          repo = "powerlevel10k";
+          rev = "3e2053a9341fe4cf5ab69909d3f39d53b1dfe772";
+          sha256 = "sha256-6tWuayZgQd9pUrD3xKlUSmOFQCgZ96G3DB8ojgZ/a78=";
+        };
+        zsh-plugin-autosuggestions = pkgs.fetchFromGitHub {
+          owner = "zsh-users";
+          repo = "zsh-autosuggestions";
+          rev = "0e810e5afa27acbd074398eefbe28d13005dbc15";
+          sha256 = "sha256-85aw9OM2pQPsWklXjuNOzp9El1MsNb+cIiZQVHUzBnk=";
+        };
+      in
+      {
+        ".p10k.zsh".source = ./p10k-zsh;
+        ".omz-custom/themes/powerlevel10k" = {
+          source = "${zsh-theme-power-level-10k}";
+          recursive = true;
+        };
+        ".omz-custom/plugins/zsh-autosuggestions" = {
+          source = "${zsh-plugin-autosuggestions}";
+          recursive = true;
+        };
       };
-      zsh-plugin-autosuggestions = pkgs.fetchFromGitHub {
-        owner = "zsh-users";
-        repo = "zsh-autosuggestions";
-        rev = "0e810e5afa27acbd074398eefbe28d13005dbc15";
-        sha256 = "sha256-85aw9OM2pQPsWklXjuNOzp9El1MsNb+cIiZQVHUzBnk=";
-      };
-    in {
-      ".p10k.zsh".source = ./p10k-zsh;
-      ".omz-custom/themes/powerlevel10k" = {
-        source = "${zsh-theme-power-level-10k}";
-        recursive = true;
-      };
-      ".omz-custom/plugins/zsh-autosuggestions" = {
-        source = "${zsh-plugin-autosuggestions}";
-        recursive = true;
-      };
-    };
 
-    activation = let
-      apps = pkgs.buildEnv {
-        name = "home-manager-applications";
-        paths = config.home.packages;
-        pathsToLink = "/Applications";
+    activation =
+      let
+        apps = pkgs.buildEnv {
+          name = "home-manager-applications";
+          paths = config.home.packages;
+          pathsToLink = "/Applications";
+        };
+      in
+      {
+        copyApplications = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          SOURCE_DIR=${apps}/Applications
+          TARGET_DIR="$HOME/Applications/Home Manager Apps (Copied)"
+          /usr/bin/sudo rm -rf "$TARGET_DIR"
+          mkdir "$TARGET_DIR"
+          ls "$TARGET_DIR"
+          for SOURCE_FILE in $SOURCE_DIR/*; do
+            TARGET_FILE="$TARGET_DIR/$(basename "$SOURCE_FILE")"
+            $DRY_RUN_CMD cp ''${VERBOSE_ARG:+-v} -fHRL "$SOURCE_FILE" "$TARGET_FILE"
+            $DRY_RUN_CMD chmod ''${VERBOSE_ARG:+-v} -R +w "$TARGET_FILE"
+          done
+        '';
       };
-    in {
-      copyApplications = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        SOURCE_DIR=${apps}/Applications
-        TARGET_DIR="$HOME/Applications/Home Manager Apps (Copied)"
-        /usr/bin/sudo rm -rf "$TARGET_DIR"
-        mkdir "$TARGET_DIR"
-        ls "$TARGET_DIR"
-        for SOURCE_FILE in $SOURCE_DIR/*; do
-          TARGET_FILE="$TARGET_DIR/$(basename "$SOURCE_FILE")"
-          $DRY_RUN_CMD cp ''${VERBOSE_ARG:+-v} -fHRL "$SOURCE_FILE" "$TARGET_FILE"
-          $DRY_RUN_CMD chmod ''${VERBOSE_ARG:+-v} -R +w "$TARGET_FILE"
-        done
-      '';
-    };
   };
 
   programs.ssh.enable = true;

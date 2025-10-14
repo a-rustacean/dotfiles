@@ -5,7 +5,7 @@
   settings = {
     general.live_config_reload = true;
     font = {
-      size = 18.0;
+      size = 24.0;
       bold = {
         family = "JetBrainsMono Nerd Font Mono";
         style = "Bold";

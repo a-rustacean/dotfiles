@@ -29,5 +29,5 @@
 
   networking.hostName = "work";
 
-  services.aerospace = import ./aerospace.nix { inherit pkgs; };
+  services.aerospace = import ./programs/aerospace.nix { inherit pkgs; };
 }

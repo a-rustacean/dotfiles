@@ -1,14 +1,18 @@
 { config, pkgs, lib, ... }:
-
 {
   home = {
     stateVersion = "25.05";
 
-    shellAliases = { tmux = "${config.programs.tmux.package}/bin/tmux -u"; };
-
+    shellAliases = { tmux = "${config.programs.tmux.package}/bin/tmux -u"; };    
+    
     packages = with pkgs; [
       # Font
       nerd-fonts.jetbrains-mono
+      # LSPs
+      marksman
+      typescript-language-server
+      vscode-langservers-extracted
+      nil
       # Tools
       neofetch
       typos
@@ -23,11 +27,10 @@
       cmake
       docker
       ffmpeg
+      wget
       # JS/TS
       nodejs_22
-      vscode-langservers-extracted
       typescript
-      typescript-language-server
       bun
       deno
       nodePackages.pnpm
@@ -37,8 +40,6 @@
       ruff
       python313
       uv
-      # Nix
-      nil
       # Git
       git-lfs
       gitui
@@ -46,7 +47,12 @@
       bash-language-server
       # Apps
       discord
-      warp-terminal
+      utm
+      # gRPC
+      protobuf
+      grpcurl
+      # gradle
+      gradle
     ];
 
     file = let
@@ -73,6 +79,27 @@
         recursive = true;
       };
     };
+
+    activation = let
+      apps = pkgs.buildEnv {
+        name = "home-manager-applications";
+        paths = config.home.packages;
+        pathsToLink = "/Applications";
+      };
+    in {
+      copyApplications = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        SOURCE_DIR=${apps}/Applications
+        TARGET_DIR="$HOME/Applications/Home Manager Apps (Copied)"
+        /usr/bin/sudo rm -rf "$TARGET_DIR"
+        mkdir "$TARGET_DIR"
+        ls "$TARGET_DIR"
+        for SOURCE_FILE in $SOURCE_DIR/*; do
+          TARGET_FILE="$TARGET_DIR/$(basename "$SOURCE_FILE")"
+          $DRY_RUN_CMD cp ''${VERBOSE_ARG:+-v} -fHRL "$SOURCE_FILE" "$TARGET_FILE"
+          $DRY_RUN_CMD chmod ''${VERBOSE_ARG:+-v} -R +w "$TARGET_FILE"
+        done
+      '';
+    };
   };
 
   programs.ssh.enable = true;
@@ -84,4 +111,13 @@
   programs.helix = import ./programs/helix.nix { };
   programs.tmux = import ./programs/tmux.nix { };
   programs.zsh = import ./programs/zsh.nix { inherit config lib; };
+  programs.java = {
+    enable = true;
+    package = pkgs.jdk21;
+  };
+
+  services.gpg-agent = {
+    enable = true;
+    pinentry.package = pkgs.pinentry_mac;
+  };
 }

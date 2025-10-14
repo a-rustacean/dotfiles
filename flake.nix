@@ -1,5 +1,5 @@
 {
-  description = "Darwin + Linux (non-nixOS) configuration";
+  description = "Nix-Darwin configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
@@ -13,28 +13,22 @@
     };
   };
 
-  outputs = { home-manager, nix-darwin, nixpkgs, ... }: {
+  outputs = { home-manager, nix-darwin, ... }: {
     # For Darwin, use nix-darwin and import Home Manager as a module.
     darwinConfigurations.work = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       modules = [
-        ./darwin/configuration.nix
+        ./configuration.nix
         home-manager.darwinModules.home-manager
         {
           nixpkgs.config.allowUnfree = true;
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            users.dilshad = import ./darwin/home.nix;
+            users.dilshad = import ./home.nix;
           };
         }
       ];
-    };
-    # For Linux (non-nixOS) use Home Manager directly.
-    homeConfigurations.work = home-manager.lib.homeManagerConfiguration {
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { config.allowUnfree = true; };
-      configuration = import ./linux/home.nix;
     };
   };
 }

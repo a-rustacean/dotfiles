@@ -1,5 +1,5 @@
 {
-  description = "Nix-Darwin configuration";
+  description = "NixOS and Nix-Darwin configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
@@ -13,42 +13,77 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     {
-      home-manager,
       nix-darwin,
       nixpkgs,
+      home-manager,
+      zen-browser,
       ...
-    }:
+    }@inputs:
     let
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
+      user = "dilshad";
+      hostname = "work";
+
+      darwinSystems = [
         "x86_64-darwin"
         "aarch64-darwin"
       ];
-    in
-    {
-      # For Darwin, use nix-darwin and import Home Manager as a module.
-      darwinConfigurations.work = nix-darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        modules = [
-          ./configuration.nix
-          home-manager.darwinModules.home-manager
-          {
-            nixpkgs.config.allowUnfree = true;
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              users.dilshad = import ./home.nix;
-            };
-          }
-        ];
+      linuxSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+      systems = darwinSystems ++ linuxSystems;
+
+      mkHomeManagerModule = system: path: {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          users."${user}" = import path;
+          extraSpecialArgs = {
+            inherit
+              inputs
+              system
+              user
+              hostname
+              ;
+          };
+        };
       };
 
-      # Formatter for all systems
+      mkSystem = system: host: {
+        inherit system;
+        specialArgs = {
+          inherit
+            inputs
+            system
+            user
+            hostname
+            ;
+        };
+        modules = [
+          ./hosts/${host}/configuration.nix
+          home-manager."${host}Modules".home-manager
+          (mkHomeManagerModule system ./hosts/${host}/home.nix)
+        ];
+      };
+    in
+    {
+      packages =
+        nixpkgs.lib.genAttrs darwinSystems (system: {
+          darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem (mkSystem "${system}" "darwin");
+        })
+        // nixpkgs.lib.genAttrs linuxSystems (system: {
+          nixosConfigurations."${hostname}" = nixpkgs.lib.nixosSystem (mkSystem "${system}" "nixos");
+        });
+
       formatter = builtins.listToAttrs (
         map (system: {
           name = system;

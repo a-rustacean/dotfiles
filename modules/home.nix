@@ -2,8 +2,10 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
+
 {
   home = {
     stateVersion = "25.05";
@@ -20,6 +22,7 @@
       typescript-language-server
       vscode-langservers-extracted
       nil
+      bash-language-server
       # Tools
       neofetch
       typos
@@ -28,13 +31,13 @@
       rsync
       util-linux
       ripgrep
-      rar
       hexyl
       tree
       cmake
       docker
       ffmpeg
       wget
+      inetutils
       # JS/TS
       nodejs_22
       typescript
@@ -50,16 +53,12 @@
       # Git
       git-lfs
       gitui
-      # Bash
-      bash-language-server
       # Apps
       discord
-      utm
+      inputs.zen-browser.packages."${system}".default
       # gRPC
       protobuf
       grpcurl
-      # gradle
-      gradle
     ];
 
     file =
@@ -78,7 +77,7 @@
         };
       in
       {
-        ".p10k.zsh".source = ./p10k-zsh;
+        ".p10k.zsh".source = ../p10k-zsh;
         ".omz-custom/themes/powerlevel10k" = {
           source = "${zsh-theme-power-level-10k}";
           recursive = true;
@@ -88,47 +87,18 @@
           recursive = true;
         };
       };
-
-    activation =
-      let
-        apps = pkgs.buildEnv {
-          name = "home-manager-applications";
-          paths = config.home.packages;
-          pathsToLink = "/Applications";
-        };
-      in
-      {
-        copyApplications = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          SOURCE_DIR=${apps}/Applications
-          TARGET_DIR="$HOME/Applications/Home Manager Apps (Copied)"
-          /usr/bin/sudo rm -rf "$TARGET_DIR"
-          mkdir "$TARGET_DIR"
-          ls "$TARGET_DIR"
-          for SOURCE_FILE in $SOURCE_DIR/*; do
-            TARGET_FILE="$TARGET_DIR/$(basename "$SOURCE_FILE")"
-            $DRY_RUN_CMD cp ''${VERBOSE_ARG:+-v} -fHRL "$SOURCE_FILE" "$TARGET_FILE"
-            $DRY_RUN_CMD chmod ''${VERBOSE_ARG:+-v} -R +w "$TARGET_FILE"
-          done
-        '';
-      };
   };
 
   programs.ssh.enable = true;
   programs.gpg.enable = true;
-  programs.home-manager.enable = true;
-  programs.git = import ./programs/git.nix { inherit config; };
-  programs.gh = import ./programs/gh.nix { inherit pkgs; };
-  programs.alacritty = import ./programs/alacritty.nix { };
-  programs.helix = import ./programs/helix.nix { };
-  programs.tmux = import ./programs/tmux.nix { };
-  programs.zsh = import ./programs/zsh.nix { inherit config lib; };
+  programs.git = import ./git.nix { inherit config; };
+  programs.gh = import ./gh.nix { inherit pkgs; };
+  programs.alacritty = import ./alacritty.nix { };
+  programs.helix = import ./helix.nix { };
+  programs.tmux = import ./tmux.nix { };
+  programs.zsh = import ./zsh.nix { inherit config lib; };
   programs.java = {
     enable = true;
     package = pkgs.jdk21;
-  };
-
-  services.gpg-agent = {
-    enable = true;
-    pinentry.package = pkgs.pinentry_mac;
   };
 }

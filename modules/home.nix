@@ -54,7 +54,6 @@
       git-lfs
       gitui
       # Apps
-      discord
       inputs.zen-browser.packages."${system}".default
       # gRPC
       protobuf

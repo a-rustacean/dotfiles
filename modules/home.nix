@@ -38,6 +38,7 @@
       ffmpeg
       wget
       inetutils
+      ocrmypdf
       # JS/TS
       nodejs_22
       typescript
@@ -55,6 +56,7 @@
       gitui
       # Apps
       inputs.zen-browser.packages."${system}".default
+      zed-editor
       # gRPC
       protobuf
       grpcurl

@@ -8,8 +8,6 @@
   imports = [ ../../modules/home.nix ];
 
   home = {
-    packages = [ pkgs.utm ];
-
     activation =
       let
         apps = pkgs.buildEnv {

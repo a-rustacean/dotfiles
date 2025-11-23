@@ -3,6 +3,8 @@
   pkgs,
   lib,
   inputs,
+  pkgs-old,
+  system,
   ...
 }:
 
@@ -38,7 +40,6 @@
       ffmpeg
       wget
       inetutils
-      ocrmypdf
       # JS/TS
       nodejs_22
       typescript
@@ -53,13 +54,19 @@
       uv
       # Git
       git-lfs
-      gitui
+      act
       # Apps
       inputs.zen-browser.packages."${system}".default
       zed-editor
+      vscode
+      discord
+      utm
       # gRPC
       protobuf
       grpcurl
+      # AI stuff
+      gemini-cli
+      warp-terminal
     ];
 
     file =
@@ -90,7 +97,10 @@
       };
   };
 
-  programs.ssh.enable = true;
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+  };
   programs.gpg.enable = true;
   programs.git = import ./git.nix { inherit config; };
   programs.gh = import ./gh.nix { inherit pkgs; };
@@ -98,6 +108,10 @@
   programs.helix = import ./helix.nix { };
   programs.tmux = import ./tmux.nix { };
   programs.zsh = import ./zsh.nix { inherit config lib; };
+  programs.gitui = {
+    enable = true;
+    package = pkgs-old.gitui;
+  };
   programs.java = {
     enable = true;
     package = pkgs.jdk21;

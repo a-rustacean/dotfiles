@@ -2,15 +2,17 @@
   description = "NixOS and Nix-Darwin configuration";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    nixpkgs-old.url = "github:NixOS/nixpkgs/nixos-25.05";
 
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
+      url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -24,6 +26,7 @@
     {
       nix-darwin,
       nixpkgs,
+      nixpkgs-old,
       home-manager,
       zen-browser,
       ...
@@ -54,6 +57,7 @@
               user
               hostname
               ;
+            pkgs-old = import nixpkgs-old { inherit system; };
           };
         };
       };
@@ -67,6 +71,7 @@
             user
             hostname
             ;
+          pkgs-old = import nixpkgs-old { inherit system; };
         };
         modules = [
           ./hosts/${host}/configuration.nix
@@ -78,10 +83,10 @@
     {
       packages =
         nixpkgs.lib.genAttrs darwinSystems (system: {
-          darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem (mkSystem "${system}" "darwin");
+          darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem (mkSystem system "darwin");
         })
         // nixpkgs.lib.genAttrs linuxSystems (system: {
-          nixosConfigurations."${hostname}" = nixpkgs.lib.nixosSystem (mkSystem "${system}" "nixos");
+          nixosConfigurations."${hostname}" = nixpkgs.lib.nixosSystem (mkSystem system "nixos");
         });
 
       formatter = builtins.listToAttrs (

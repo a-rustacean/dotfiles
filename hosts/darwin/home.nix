@@ -20,14 +20,15 @@
         copyApplications = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
           SOURCE_DIR=${apps}/Applications
           TARGET_DIR="$HOME/Applications/Home Manager Apps (Copied)"
+
           /usr/bin/sudo rm -rf "$TARGET_DIR"
-          mkdir "$TARGET_DIR"
-          ls "$TARGET_DIR"
-          for SOURCE_FILE in $SOURCE_DIR/*; do
-            TARGET_FILE="$TARGET_DIR/$(basename "$SOURCE_FILE")"
-            $DRY_RUN_CMD cp ''${VERBOSE_ARG:+-v} -fHRL "$SOURCE_FILE" "$TARGET_FILE"
-            $DRY_RUN_CMD chmod ''${VERBOSE_ARG:+-v} -R +w "$TARGET_FILE"
-          done
+          mkdir -p "$TARGET_DIR"
+
+          # Use rsync to copy folder contents, following symlinks
+          $DRY_RUN_CMD ${pkgs.rsync}/bin/rsync -aL ''${VERBOSE_ARG:+-v} "$SOURCE_DIR/" "$TARGET_DIR/"
+
+          # Ensure everything is writable afterwards
+          $DRY_RUN_CMD chmod ''${VERBOSE_ARG:+-v} -R +w "$TARGET_DIR"
         '';
       };
   };

@@ -25,6 +25,7 @@
       vscode-langservers-extracted
       nil
       bash-language-server
+      nixd
       # Tools
       neofetch
       typos
@@ -54,19 +55,13 @@
       uv
       # Git
       git-lfs
-      act
       # Apps
       inputs.zen-browser.packages."${system}".default
-      zed-editor
-      vscode
       discord
-      utm
+      zed-editor
       # gRPC
       protobuf
       grpcurl
-      # AI stuff
-      gemini-cli
-      warp-terminal
     ];
 
     file =

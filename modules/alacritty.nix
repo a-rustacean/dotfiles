@@ -1,4 +1,9 @@
-{ }:
+{ system }:
+let
+  isDarwin = builtins.match ".*darwin$" system != null;
+
+  decorations = if isDarwin then "Buttonless" else "None";
+in
 {
   enable = true;
   settings = {
@@ -23,6 +28,7 @@
       };
     };
     window = {
+      inherit decorations;
       dynamic_padding = true;
       startup_mode = "Windowed";
       dimensions = {

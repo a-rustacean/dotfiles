@@ -99,7 +99,7 @@
   programs.gpg.enable = true;
   programs.git = import ./git.nix { inherit config; };
   programs.gh = import ./gh.nix { inherit pkgs; };
-  programs.alacritty = import ./alacritty.nix { };
+  programs.alacritty = import ./alacritty.nix { inherit system; };
   programs.helix = import ./helix.nix { };
   programs.tmux = import ./tmux.nix { };
   programs.zsh = import ./zsh.nix { inherit config lib; };

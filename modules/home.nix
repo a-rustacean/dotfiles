@@ -42,11 +42,12 @@
       wget
       inetutils
       # JS/TS
-      nodejs_22
+      nodejs_24
       typescript
       bun
       deno
       nodePackages.pnpm
+      oxlint
       # Rust
       rustup
       # Python
@@ -56,7 +57,6 @@
       # Git
       git-lfs
       # Apps
-      discord
       zed-editor
       # gRPC
       protobuf

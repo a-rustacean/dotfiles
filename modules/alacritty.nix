@@ -39,7 +39,7 @@ in
         x = 10;
         y = 10;
       };
-      opacity = 0.9;
+      opacity = 0.85;
     };
     colors = {
       primary = {

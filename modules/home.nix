@@ -56,7 +56,6 @@
       # Git
       git-lfs
       # Apps
-      inputs.zen-browser.packages."${system}".default
       discord
       zed-editor
       # gRPC

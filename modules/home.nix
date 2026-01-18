@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  inputs,
   pkgs-old,
   system,
   ...
@@ -26,6 +25,8 @@
       nil
       bash-language-server
       nixd
+      just-lsp
+      taplo
       # Tools
       neofetch
       typos
@@ -61,6 +62,8 @@
       # gRPC
       protobuf
       grpcurl
+      # AI
+      opencode
     ];
 
     file =

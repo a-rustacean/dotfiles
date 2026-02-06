@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  pkgs-old,
   system,
   ...
 }:
@@ -19,7 +18,6 @@
       # Font
       nerd-fonts.jetbrains-mono
       # LSPs
-      marksman
       typescript-language-server
       vscode-langservers-extracted
       nil
@@ -57,13 +55,9 @@
       uv
       # Git
       git-lfs
-      # Apps
-      zed-editor
-      # gRPC
-      protobuf
-      grpcurl
-      # AI
-      opencode
+      # zig
+      zig
+      zls
     ];
 
     file =
@@ -99,18 +93,14 @@
     enableDefaultConfig = false;
   };
   programs.gpg.enable = true;
+  programs.gitui.enable = true;
   programs.git = import ./git.nix { inherit config; };
-  programs.gh = import ./gh.nix { inherit pkgs; };
   programs.alacritty = import ./alacritty.nix { inherit system; };
   programs.helix = import ./helix.nix { };
   programs.tmux = import ./tmux.nix { };
   programs.zsh = import ./zsh.nix { inherit config lib; };
-  programs.gitui = {
-    enable = true;
-    package = pkgs-old.gitui;
-  };
   programs.java = {
     enable = true;
-    package = pkgs.jdk21;
+    package = pkgs.jdk25;
   };
 }

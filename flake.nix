@@ -4,8 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nixpkgs-old.url = "github:NixOS/nixpkgs/nixos-25.05";
-
     nix-darwin = {
       url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -15,14 +13,26 @@
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    zig-overlay = {
+      url = "github:mitchellh/zig-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    zls-overlay = {
+      url = "github:zigtools/zls";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.zig-overlay.follows = "zig-overlay";
+    };
   };
 
   outputs =
     {
       nix-darwin,
       nixpkgs,
-      nixpkgs-old,
       home-manager,
+      zig-overlay,
+      zls-overlay,
       ...
     }@inputs:
     let
@@ -39,7 +49,7 @@
       ];
       systems = darwinSystems ++ linuxSystems;
 
-      mkHomeManagerModule = system: path: {
+      mkHomeManagerModule = system: path: pkgs: {
         home-manager = {
           useGlobalPkgs = true;
           useUserPackages = true;
@@ -50,29 +60,46 @@
               system
               user
               hostname
+              pkgs
               ;
-            pkgs-old = import nixpkgs-old { inherit system; };
           };
         };
       };
 
-      mkSystem = system: host: {
-        inherit system;
-        specialArgs = {
-          inherit
-            inputs
-            system
-            user
-            hostname
-            ;
-          pkgs-old = import nixpkgs-old { inherit system; };
+      mkSystem =
+        system: host:
+        let
+          zig = zig-overlay.packages.${system}.master;
+          zls = zls-overlay.packages.${system}.zls.overrideAttrs (old: {
+            nativeBuildInputs = [ zig ];
+          });
+          overlays = [
+            (final: prev: {
+              inherit zig zls;
+            })
+          ];
+          pkgs = import nixpkgs {
+            inherit system;
+            inherit overlays;
+          };
+        in
+        {
+          inherit system;
+          specialArgs = {
+            inherit
+              inputs
+              system
+              user
+              hostname
+              pkgs
+              ;
+          };
+          modules = [
+            ./hosts/${host}/configuration.nix
+            home-manager."${host}Modules".home-manager
+            (mkHomeManagerModule system ./hosts/${host}/home.nix pkgs)
+          ];
         };
-        modules = [
-          ./hosts/${host}/configuration.nix
-          home-manager."${host}Modules".home-manager
-          (mkHomeManagerModule system ./hosts/${host}/home.nix)
-        ];
-      };
     in
     {
       packages =

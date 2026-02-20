@@ -3,7 +3,7 @@
   enable = true;
   defaultEditor = true;
   settings = {
-    theme = "everblush_transparent";
+    theme = "everblush_ansi_bg";
     editor = {
       line-number = "relative";
       true-color = true;
@@ -52,9 +52,11 @@
     };
   };
   themes = {
-    everblush_transparent = {
+    everblush_ansi_bg = {
       inherits = "everblush";
-      "ui.background" = { };
+      "ui.background" = {
+        color = "#1d1f21";
+      };
     };
   };
 }

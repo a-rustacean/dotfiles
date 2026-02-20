@@ -3,7 +3,7 @@
   enable = true;
   defaultEditor = true;
   settings = {
-    theme = "github_dark_transparent";
+    theme = "everblush_transparent";
     editor = {
       line-number = "relative";
       true-color = true;
@@ -52,8 +52,8 @@
     };
   };
   themes = {
-    github_dark_transparent = {
-      inherits = "github_dark";
+    everblush_transparent = {
+      inherits = "everblush";
       "ui.background" = { };
     };
   };

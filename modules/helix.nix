@@ -7,6 +7,7 @@
     editor = {
       line-number = "relative";
       true-color = true;
+      rulers = [80 100];
       cursor-shape.insert = "bar";
       file-picker.hidden = false;
 

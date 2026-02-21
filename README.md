@@ -6,4 +6,4 @@
 
 ### GitUI
 
-![Git UI][./screenshots/gitui.png]
+![Git UI](./screenshots/gitui.png)

@@ -69,7 +69,7 @@
       mkSystem =
         system: host:
         let
-          zig = zig-overlay.packages.${system}.master-2026-02-15;
+          zig = zig-overlay.packages.${system}.master-2026-03-30;
           zls = zls-overlay.packages.${system}.zls.overrideAttrs (old: {
             nativeBuildInputs = [ zig ];
           });

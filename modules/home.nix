@@ -26,7 +26,7 @@
       just-lsp
       taplo
       # Tools
-      neofetch
+      fastfetch
       typos
       xclip
       htop

@@ -40,6 +40,9 @@
       ffmpeg
       wget
       inetutils
+      openblas
+      llvmPackages_20.clang-tools
+      protobuf
       # JS/TS
       nodejs_24
       typescript

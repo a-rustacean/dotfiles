@@ -1,4 +1,10 @@
-{ }:
+{ pkgs }:
+let
+  prettierFor = lang: {
+    command = "${pkgs.prettier}/bin/prettier";
+    args = ["--parser" lang];
+  };
+in
 {
   enable = true;
   defaultEditor = true;
@@ -57,5 +63,39 @@
       inherits = "everblush";
       "ui.background" = {};
     };
+  };
+  languages = {
+    language = [
+      {
+        name = "html";
+        formatter = prettierFor "html";
+        auto-format = true;
+      }
+      {
+        name = "css";
+        formatter = prettierFor "css";
+        auto-format = true;
+      }
+      {
+        name = "javascript";
+        formatter = prettierFor "javascript";
+        auto-format = true;
+      }
+      {
+        name = "typescript";
+        formatter = prettierFor "typescript";
+        auto-format = true;
+      }
+      {
+        name = "tsx";
+        formatter = prettierFor "typescript";
+        auto-format = true;
+      }
+      {
+        name = "json";
+        # TODO: enable it after finding a good formatter, prettier sucks (? or prolly some other issue)
+        auto-format = false;
+      }
+    ];
   };
 }

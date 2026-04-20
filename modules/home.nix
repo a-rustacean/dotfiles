@@ -8,7 +8,7 @@
 
 {
   home = {
-    stateVersion = "25.05";
+    stateVersion = "26.05";
 
     shellAliases = {
       tmux = "${config.programs.tmux.package}/bin/tmux -u";

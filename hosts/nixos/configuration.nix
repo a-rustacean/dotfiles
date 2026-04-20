@@ -6,7 +6,7 @@
 }:
 
 {
-  system.stateVersion = "25.05";
+  system.stateVersion = "26.05";
   imports = [ ./hardware-configuration.nix ];
 
   boot.loader.systemd-boot.enable = true;

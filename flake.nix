@@ -68,19 +68,11 @@
       mkSystem =
         system: host:
         let
-          zig = zig-overlay.packages.${system}.master-2026-03-30;
+          zig = zig-overlay.packages.${system}."0.16.0";
           zls = zls-overlay.packages.${system}.zls.overrideAttrs (old: {
             nativeBuildInputs = [ zig ];
           });
-          overlays = [
-            (final: prev: {
-              inherit zig zls;
-            })
-          ];
-          pkgs = import nixpkgs {
-            inherit system;
-            inherit overlays;
-          };
+          pkgs = nixpkgs.legacyPackages."${system}" // { inherit zig zls; };
         in
         {
           inherit system;

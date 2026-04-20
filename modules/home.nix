@@ -35,6 +35,8 @@
       ripgrep
       hexyl
       tree
+      gnumake
+      gcc
       cmake
       docker
       ffmpeg
@@ -42,13 +44,16 @@
       inetutils
       openblas
       llvmPackages_20.clang-tools
+      llvm
+      lld
       protobuf
+      xz
       # JS/TS
       nodejs_24
       typescript
       bun
       deno
-      nodePackages.pnpm
+      pnpm
       oxlint
       # Rust
       rustup

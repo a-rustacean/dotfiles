@@ -20,7 +20,6 @@
       # LSPs
       typescript-language-server
       vscode-langservers-extracted
-      nil
       bash-language-server
       nixd
       just-lsp

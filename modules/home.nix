@@ -29,6 +29,7 @@
       typos
       xclip
       htop
+      btop
       rsync
       util-linux
       ripgrep

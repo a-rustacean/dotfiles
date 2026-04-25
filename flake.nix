@@ -68,7 +68,7 @@
       mkSystem =
         system: host:
         let
-          zig = zig-overlay.packages.${system}."0.16.0";
+          zig = zig-overlay.packages.${system}.master;
           zls = zls-overlay.packages.${system}.zls.overrideAttrs (old: {
             nativeBuildInputs = [ zig ];
           });

@@ -68,32 +68,22 @@
       zls
     ];
 
-    file =
-      let
-        zsh-theme-power-level-10k = pkgs.fetchFromGitHub {
-          owner = "romkatv";
-          repo = "powerlevel10k";
-          rev = "3e2053a9341fe4cf5ab69909d3f39d53b1dfe772";
-          sha256 = "sha256-6tWuayZgQd9pUrD3xKlUSmOFQCgZ96G3DB8ojgZ/a78=";
-        };
-        zsh-plugin-autosuggestions = pkgs.fetchFromGitHub {
-          owner = "zsh-users";
-          repo = "zsh-autosuggestions";
-          rev = "0e810e5afa27acbd074398eefbe28d13005dbc15";
-          sha256 = "sha256-85aw9OM2pQPsWklXjuNOzp9El1MsNb+cIiZQVHUzBnk=";
-        };
-      in
-      {
-        ".p10k.zsh".source = ../p10k-zsh;
-        ".omz-custom/themes/powerlevel10k" = {
-          source = "${zsh-theme-power-level-10k}";
-          recursive = true;
-        };
-        ".omz-custom/plugins/zsh-autosuggestions" = {
-          source = "${zsh-plugin-autosuggestions}";
-          recursive = true;
-        };
+    file = {
+      ".p10k.zsh".source = ../p10k-zsh;
+      ".omz-custom/themes/powerlevel10k" = {
+        source = "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
+        recursive = true;
       };
+      ".omz-custom/plugins/zsh-autocomplete" = {
+        source = "${pkgs.zsh-autocomplete}/share/zsh-autocomplete";
+        recursive = true;
+      };
+      ".omz-custom/plugins/zsh-autosuggestions" = {
+        source = "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions";
+        recursive = true;
+      };
+      ".omz-custom/plugins/zsh-autopair/zsh-autopair.plugin.zsh".source = "${pkgs.zsh-autopair}/share/zsh/zsh-autopair/autopair.zsh";
+    };
   };
 
   programs.ssh = {

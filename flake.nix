@@ -14,14 +14,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    zig-overlay = {
-      url = "github:mitchellh/zig-overlay";
+    zig = {
+      url = "github:silversquirl/zig-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    zls-overlay = {
+    zls = {
       url = "github:zigtools/zls";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.zig-flake.follows = "zig";
     };
   };
 
@@ -30,8 +31,8 @@
       nix-darwin,
       nixpkgs,
       home-manager,
-      zig-overlay,
-      zls-overlay,
+      zig,
+      zls,
       ...
     }@inputs:
     let
@@ -68,11 +69,10 @@
       mkSystem =
         system: host:
         let
-          zig = zig-overlay.packages.${system}.master;
-          zls = zls-overlay.packages.${system}.zls.overrideAttrs (old: {
-            nativeBuildInputs = [ zig ];
-          });
-          pkgs = nixpkgs.legacyPackages."${system}" // { inherit zig zls; };
+          pkgs = nixpkgs.legacyPackages."${system}" // {
+            zig = zig.packages.${system}.nightly;
+            zls = zls.packages.${system}.zls;
+          };
         in
         {
           inherit system;

@@ -52,7 +52,6 @@
       nodejs_24
       typescript
       bun
-      deno
       pnpm
       oxlint
       # Rust

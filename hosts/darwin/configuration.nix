@@ -9,11 +9,14 @@
   nix = {
     enable = true;
     settings = {
-      experimental-features = ["nix-command" "flakes"];
-      trusted-users = [user];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      trusted-users = [ user ];
     };
   };
-  
+
   nixpkgs = {
     hostPlatform = system;
     config.allowUnfree = true;
@@ -26,7 +29,7 @@
     defaults = {
       dock.autohide = true;
       dock.mru-spaces = false;
-      dock.persistent-apps = [];
+      dock.persistent-apps = [ ];
       dock.show-recents = false;
       finder.AppleShowAllExtensions = true;
       finder.FXPreferredViewStyle = "clmv";
@@ -45,4 +48,5 @@
   networking.hostName = hostname;
 
   services.aerospace = import ../../modules/aerospace.nix { inherit pkgs; };
+  environment.systemPackages = [ pkgs.darwin.libiconv ];
 }

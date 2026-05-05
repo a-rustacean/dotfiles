@@ -81,7 +81,8 @@
         source = "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions";
         recursive = true;
       };
-      ".omz-custom/plugins/zsh-autopair/zsh-autopair.plugin.zsh".source = "${pkgs.zsh-autopair}/share/zsh/zsh-autopair/autopair.zsh";
+      ".omz-custom/plugins/zsh-autopair/zsh-autopair.plugin.zsh".source =
+        "${pkgs.zsh-autopair}/share/zsh/zsh-autopair/autopair.zsh";
     };
   };
 

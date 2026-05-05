@@ -2,7 +2,10 @@
 let
   prettierFor = lang: {
     command = "${pkgs.prettier}/bin/prettier";
-    args = ["--parser" lang];
+    args = [
+      "--parser"
+      lang
+    ];
   };
 in
 {
@@ -13,7 +16,10 @@ in
     editor = {
       line-number = "relative";
       true-color = true;
-      rulers = [80 100];
+      rulers = [
+        80
+        100
+      ];
       cursor-shape.insert = "bar";
       file-picker.hidden = false;
 
@@ -61,7 +67,7 @@ in
   themes = {
     everblush_inherit_bg = {
       inherits = "everblush";
-      "ui.background" = {};
+      "ui.background" = { };
     };
   };
   languages = {

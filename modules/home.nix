@@ -94,6 +94,5 @@
   programs.git = import ./git.nix { inherit config; };
   programs.alacritty = import ./alacritty.nix { inherit system; };
   programs.helix = import ./helix.nix { inherit pkgs; };
-  programs.tmux = import ./tmux.nix { };
   programs.zsh = import ./zsh.nix { inherit config lib; };
 }

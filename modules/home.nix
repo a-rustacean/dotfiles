@@ -3,10 +3,13 @@
   pkgs,
   lib,
   system,
+  extraPkgs,
   ...
 }:
 
 {
+  imports = [ extraPkgs.zenHomeModule ];
+
   home = {
     stateVersion = "26.05";
 
@@ -63,8 +66,8 @@
       # Git
       git-lfs
       # zig
-      zig
-      zls
+      extraPkgs.zig
+      extraPkgs.zls
     ];
 
     file = {
@@ -96,4 +99,5 @@
   programs.alacritty = import ./alacritty.nix { inherit system; };
   programs.helix = import ./helix.nix { inherit pkgs; };
   programs.zsh = import ./zsh.nix { inherit config lib; };
+  programs.zen-browser = import ./zen.nix { inherit pkgs; };
 }

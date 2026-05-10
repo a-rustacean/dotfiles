@@ -24,6 +24,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.zig-flake.follows = "zig";
     };
+
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
+    };
   };
 
   outputs =
@@ -33,8 +41,9 @@
       home-manager,
       zig,
       zls,
+      zen-browser,
       ...
-    }@inputs:
+    }:
     let
       user = "dilshad";
       hostname = "work";
@@ -49,18 +58,17 @@
       ];
       systems = darwinSystems ++ linuxSystems;
 
-      mkHomeManagerModule = system: path: pkgs: {
+      mkHomeManagerModule = system: path: extraPkgs: {
         home-manager = {
           useGlobalPkgs = true;
           useUserPackages = true;
           users."${user}" = import path;
           extraSpecialArgs = {
             inherit
-              inputs
               system
               user
               hostname
-              pkgs
+              extraPkgs
               ;
           };
         };
@@ -69,26 +77,25 @@
       mkSystem =
         system: host:
         let
-          pkgs = nixpkgs.legacyPackages."${system}" // {
+          extraPkgs = {
             zig = zig.packages.${system}.nightly;
             zls = zls.packages.${system}.zls;
+            zenHomeModule = zen-browser.homeModules.beta;
           };
         in
         {
           inherit system;
           specialArgs = {
             inherit
-              inputs
               system
               user
               hostname
-              pkgs
               ;
           };
           modules = [
             ./hosts/${host}/configuration.nix
             home-manager."${host}Modules".home-manager
-            (mkHomeManagerModule system ./hosts/${host}/home.nix pkgs)
+            (mkHomeManagerModule system ./hosts/${host}/home.nix extraPkgs)
           ];
         };
     in

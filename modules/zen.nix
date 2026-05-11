@@ -128,6 +128,15 @@ in
           ];
           definedAliases = [ "@gh" ];
         };
+        youtube = {
+          name = "YouTube Search";
+          urls = [
+            {
+              template = "https://www.youtube.com/results?search_query={searchTerms}";
+            }
+          ];
+          definedAliases = [ "@yt" ];
+        };
       };
     };
     pinsForce = true;

@@ -141,6 +141,6 @@ in
     };
     pinsForce = true;
     pinsForceAction = "remove";
-    pins = {}; # no pins
+    pins = { }; # no pins
   };
 }

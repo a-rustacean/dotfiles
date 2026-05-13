@@ -41,7 +41,6 @@
       gnumake
       gcc
       cmake
-      docker
       ffmpeg
       wget
       inetutils

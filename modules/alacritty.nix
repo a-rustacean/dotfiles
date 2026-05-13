@@ -1,9 +1,4 @@
-{ system }:
-let
-  isDarwin = builtins.match ".*darwin$" system != null;
-
-  decorations = if isDarwin then "Buttonless" else "None";
-in
+{ pkgs }:
 {
   enable = true;
   settings = {
@@ -28,7 +23,7 @@ in
       };
     };
     window = {
-      inherit decorations;
+      decorations = if pkgs.stdenv.isDarwin then "Buttonless" else "None";
       dynamic_padding = true;
       startup_mode = "Windowed";
       dimensions = {

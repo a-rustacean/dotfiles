@@ -97,7 +97,7 @@
   programs.gpg.enable = true;
   programs.gitui.enable = true;
   programs.git = import ./git.nix { inherit config; };
-  programs.alacritty = import ./alacritty.nix { inherit system; };
+  programs.alacritty = import ./alacritty.nix { inherit pkgs; };
   programs.helix = import ./helix.nix { inherit pkgs; };
   programs.zsh = import ./zsh.nix { inherit config lib; };
   programs.zen-browser = import ./zen.nix { inherit pkgs; };

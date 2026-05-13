@@ -74,6 +74,12 @@ in
       "network.socket.ip_addr_any.disabled" = true; # disallow bind to 0.0.0.0
     };
     ExtensionSettings = mkExtensionSettings {
+      # Extension to get IDs of other extensions
+      "queryamoid@kaply.com" = {
+        install_url = "https://github.com/mkaply/queryamoid/releases/download/v0.2/query_amo_addon_id-0.2-fx.xpi";
+        installation_mode = "force_installed";
+        default_area = "navbar";
+      };
       "wappalyzer@crunchlabz.com" = mkExtensionEntry {
         id = "wappalyzer";
         pinned = true;
@@ -93,6 +99,7 @@ in
       "trackmenot@mrl.nyu.edu" = "trackmenot";
       "{861a3982-bb3b-49c6-bc17-4f50de104da1}" = "custom-user-agent-revived";
       "{3579f63b-d8ee-424f-bbb6-6d0ce3285e6a}" = "chameleon-ext";
+      "jid1-KKzOGWgsW3Ao4Q@jetpack" = "i-dont-care-about-cookies";
     };
   };
   profiles.default = {

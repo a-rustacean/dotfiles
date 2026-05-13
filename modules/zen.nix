@@ -49,6 +49,7 @@ in
     Preferences = mkLockedAttrs {
       "browser.aboutConfig.showWarning" = false;
       "browser.tabs.warnOnClose" = false;
+      "browser.ctrlTab.sortByRecentlyUsed" = true;
       "media.videocontrols.picture-in-picture.video-toggle.enabled" = true;
       # Disable swipe gestures (Browser:BackOrBackDuplicate, Browser:ForwardOrForwardDuplicate)
       "browser.gesture.swipe.left" = "";
@@ -102,7 +103,6 @@ in
       "zen.welcome-screen.seen" = true;
     };
     mods = [
-      "72f8f48d-86b9-4487-acea-eb4977b18f21" # Better CtrlTab Panel
       "4ab93b88-151c-451b-a1b7-a1e0e28fa7f8" # No Sidebar Scrollbar
     ];
     search = {

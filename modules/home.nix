@@ -3,7 +3,6 @@
   pkgs,
   lib,
   user,
-  system,
   extraPkgs,
   ...
 }:

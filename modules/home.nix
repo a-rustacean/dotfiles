@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  user,
   system,
   extraPkgs,
   ...
@@ -100,4 +101,11 @@
   programs.helix = import ./helix.nix { inherit pkgs; };
   programs.zsh = import ./zsh.nix { inherit config lib; };
   programs.zen-browser = import ./zen.nix { inherit pkgs; };
+  programs.nh = rec {
+    enable = true;
+    clean.enable = true;
+    flake = if pkgs.stdenv.isDarwin then "/Users/${user}/.config/nix" else "/home/${user}/.config/nix";
+    darwinFlake = flake;
+    osFlake = flake;
+  };
 }

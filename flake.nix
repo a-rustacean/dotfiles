@@ -36,8 +36,8 @@
 
   outputs =
     {
-      nix-darwin,
       nixpkgs,
+      nix-darwin,
       home-manager,
       zig,
       zls,
@@ -56,7 +56,6 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-      systems = darwinSystems ++ linuxSystems;
 
       mkHomeManagerModule = system: path: extraPkgs: {
         home-manager = {
@@ -108,11 +107,6 @@
           nixosConfigurations."${hostname}" = nixpkgs.lib.nixosSystem (mkSystem system "nixos");
         });
 
-      formatter = builtins.listToAttrs (
-        map (system: {
-          name = system;
-          value = nixpkgs.legacyPackages.${system}.nixfmt-tree;
-        }) systems
-      );
+      formatter = builtins.mapAttrs (_: pkgs: pkgs.nixfmt-tree) nixpkgs.legacyPackages;
     };
 }

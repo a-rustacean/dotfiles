@@ -100,6 +100,7 @@ in
       "{861a3982-bb3b-49c6-bc17-4f50de104da1}" = "custom-user-agent-revived";
       "{3579f63b-d8ee-424f-bbb6-6d0ce3285e6a}" = "chameleon-ext";
       "jid1-KKzOGWgsW3Ao4Q@jetpack" = "i-dont-care-about-cookies";
+      "sponsorBlocker@ajay.app" = "sponsorblock";
     };
   };
   profiles.default = {

@@ -18,6 +18,7 @@ let
       base = {
         install_url = mkPluginUrl id;
         installation_mode = "force_installed";
+        private_browsing = true;
       };
     in
     if pinned then base // { default_area = "navbar"; } else base;
@@ -79,6 +80,7 @@ in
         install_url = "https://github.com/mkaply/queryamoid/releases/download/v0.2/query_amo_addon_id-0.2-fx.xpi";
         installation_mode = "force_installed";
         default_area = "navbar";
+        private_browsing = true;
       };
       "wappalyzer@crunchlabz.com" = mkExtensionEntry {
         id = "wappalyzer";

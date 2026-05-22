@@ -67,6 +67,9 @@
       # zig
       extraPkgs.zig
       extraPkgs.zls
+      # cloudflare
+      cloudflared
+      cloudflare-warp
     ];
 
     file = {

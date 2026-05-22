@@ -117,7 +117,7 @@ in
     ];
     search = {
       force = true;
-      default = "ddg";
+      default = "google";
       engines = {
         mynixos = {
           name = "Nixpkgs Search";

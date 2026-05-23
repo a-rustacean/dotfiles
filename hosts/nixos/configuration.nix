@@ -8,10 +8,10 @@
 }:
 {
   system.stateVersion = "26.05";
-  imports = [ ./hardware-configuration.nix ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.zfs.forceImportRoot = false;
 
   nix.settings.experimental-features = [
     "nix-command"
@@ -33,7 +33,6 @@
 
   time.timeZone = "Asia/Kolkata";
 
-  services.getty.autologinUser = user;
   services.displayManager.ly.enable = true;
 
   services.pulseaudio.enable = false;

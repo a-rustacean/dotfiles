@@ -55,43 +55,64 @@
       user = "dilshad";
       hostname = "work";
 
-      mkSystem =
-        system: host:
-        {
-          inherit system;
-          specialArgs = {
-            inherit
-              system
-              user
-              hostname
-              inputs
-              ;
-          };
-          modules = [
-            ./hosts/${host}/configuration.nix
-            home-manager."${host}Modules".home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                users."${user}" = import ./hosts/${host}/home.nix;
-                extraSpecialArgs = {
-                  inherit
-                    user
-                    hostname
-                    inputs
-                    system
-                    ;
-                };
-              };
-            }
-          ];
+      mkSystem = system: host: {
+        inherit system;
+        specialArgs = {
+          inherit
+            system
+            user
+            hostname
+            inputs
+            ;
         };
+        modules = [
+          ./hosts/${host}
+          home-manager."${host}Modules".home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users."${user}" = import ./hosts/${host}/home.nix;
+              extraSpecialArgs = {
+                inherit
+                  user
+                  hostname
+                  inputs
+                  system
+                  ;
+              };
+            };
+          }
+        ];
+      };
     in
     {
       packages = builtins.mapAttrs (system: pkgs: {
-        nixosConfigurations.${hostname}  = nixpkgs.lib.nixosSystem     (mkSystem system "nixos");
+        nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem (mkSystem system "nixos");
         darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem (mkSystem system "darwin");
+
+        nixosConfigurations.live = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit
+              user
+              hostname
+              inputs
+              system
+              ;
+          };
+          modules = [
+            (
+              { modulesPath, ... }:
+              {
+                imports = [
+                  (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
+                  ./hosts/nixos/configuration.nix
+                ];
+              }
+            )
+          ];
+        };
       }) nixpkgs.legacyPackages;
 
       formatter = builtins.mapAttrs (_: pkgs: pkgs.nixfmt-tree) nixpkgs.legacyPackages;

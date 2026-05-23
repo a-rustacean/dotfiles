@@ -1,20 +1,22 @@
-{ config }:
+{ config, ... }:
 {
-  enable = true;
-  lfs = {
+  programs.git = {
     enable = true;
-    skipSmudge = true;
-  };
-  signing = {
-    signByDefault = true;
-    key = "95BBBA7922AE1CEC";
-    signer = "${config.programs.gpg.package}/bin/gpg2";
-  };
-  settings = {
-    user = {
-      name = "Dilshad";
-      email = "a-rustacean@outlook.com";
+    lfs = {
+      enable = true;
+      skipSmudge = true;
     };
-    init.defaultBranch = "main";
+    signing = {
+      signByDefault = true;
+      key = "95BBBA7922AE1CEC";
+      signer = "${config.programs.gpg.package}/bin/gpg2";
+    };
+    settings = {
+      user = {
+        name = "Dilshad";
+        email = "a-rustacean@outlook.com";
+      };
+      init.defaultBranch = "main";
+    };
   };
 }

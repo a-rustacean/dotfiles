@@ -5,14 +5,34 @@
 }:
 
 {
-  imports = [ ../../modules/home.nix ];
+  imports = [
+    ../../modules/home.nix
+    ../../modules/rofi.nix
+    ../../modules/hyprpaper.nix
+    ../../modules/dunst.nix
+    ../../modules/ashell.nix
+  ];
   home = {
     username = user;
     homeDirectory = "/home/${user}";
     stateVersion = "26.05";
+
+    packages = with pkgs; [
+      hyprpaper
+      cliphist
+      wl-clipboard
+      noto-fonts
+      hyprshutdown
+      ranger
+    ];
+
+    file = {
+      ".config/hypr" = {
+        source = "${../../hyprland}";
+        recursive = true;
+      };
+    };
   };
 
-  wayland.windowManager.hyprland = import ../../modules/hyprland.nix { inherit pkgs; };
-  programs.rofi = import ../../modules/rofi.nix { inherit pkgs; };
-  services.hyprpaper = import ../../modules/hyprpaper.nix { };
+  services.hyprpolkitagent.enable = true;
 }

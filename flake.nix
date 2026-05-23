@@ -2,7 +2,7 @@
   description = "NixOS and Nix-Darwin configuration";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nix-darwin = {
       url = "github:LnL7/nix-darwin/master";
@@ -11,6 +11,16 @@
 
     home-manager = {
       url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprland = {
+      url = "github:hyprwm/Hyprland/v0.55.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    ashell = {
+      url = "github:MalpenZibo/ashell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -35,53 +45,18 @@
   };
 
   outputs =
-    {
+    inputs@{
       nixpkgs,
       nix-darwin,
       home-manager,
-      zig,
-      zls,
-      zen-browser,
       ...
     }:
     let
       user = "dilshad";
       hostname = "work";
 
-      darwinSystems = [
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      linuxSystems = [
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
-
-      mkHomeManagerModule = system: path: extraPkgs: {
-        home-manager = {
-          useGlobalPkgs = true;
-          useUserPackages = true;
-          users."${user}" = import path;
-          extraSpecialArgs = {
-            inherit
-              system
-              user
-              hostname
-              extraPkgs
-              ;
-          };
-        };
-      };
-
       mkSystem =
         system: host:
-        let
-          extraPkgs = {
-            zig = zig.packages.${system}.nightly;
-            zls = zls.packages.${system}.zls;
-            zenHomeModule = zen-browser.homeModules.beta;
-          };
-        in
         {
           inherit system;
           specialArgs = {
@@ -89,23 +64,35 @@
               system
               user
               hostname
+              inputs
               ;
           };
           modules = [
             ./hosts/${host}/configuration.nix
             home-manager."${host}Modules".home-manager
-            (mkHomeManagerModule system ./hosts/${host}/home.nix extraPkgs)
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users."${user}" = import ./hosts/${host}/home.nix;
+                extraSpecialArgs = {
+                  inherit
+                    user
+                    hostname
+                    inputs
+                    system
+                    ;
+                };
+              };
+            }
           ];
         };
     in
     {
-      packages =
-        nixpkgs.lib.genAttrs darwinSystems (system: {
-          darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem (mkSystem system "darwin");
-        })
-        // nixpkgs.lib.genAttrs linuxSystems (system: {
-          nixosConfigurations."${hostname}" = nixpkgs.lib.nixosSystem (mkSystem system "nixos");
-        });
+      packages = builtins.mapAttrs (system: pkgs: {
+        nixosConfigurations.${hostname}  = nixpkgs.lib.nixosSystem     (mkSystem system "nixos");
+        darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem (mkSystem system "darwin");
+      }) nixpkgs.legacyPackages;
 
       formatter = builtins.mapAttrs (_: pkgs: pkgs.nixfmt-tree) nixpkgs.legacyPackages;
     };

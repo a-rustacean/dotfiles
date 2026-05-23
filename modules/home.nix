@@ -1,14 +1,21 @@
 {
   config,
   pkgs,
-  lib,
   user,
-  extraPkgs,
+  inputs,
+  system,
   ...
 }:
 
 {
-  imports = [ extraPkgs.zenHomeModule ];
+  imports = [
+    ./git.nix
+    ./alacritty.nix
+    ./helix.nix
+    ./zsh.nix
+    inputs.zen-browser.homeModules.beta
+    ./zen.nix
+  ];
 
   home = {
     stateVersion = "26.05";
@@ -24,6 +31,7 @@
       typescript-language-server
       vscode-langservers-extracted
       bash-language-server
+      lua-language-server
       nixd
       just-lsp
       taplo
@@ -65,11 +73,8 @@
       # Git
       git-lfs
       # zig
-      extraPkgs.zig
-      extraPkgs.zls
-      # cloudflare
-      cloudflared
-      cloudflare-warp
+      inputs.zig.packages.${system}.nightly
+      inputs.zls.packages.${system}.zls
     ];
 
     file = {
@@ -97,16 +102,16 @@
   };
   programs.gpg.enable = true;
   programs.gitui.enable = true;
-  programs.git = import ./git.nix { inherit config; };
-  programs.alacritty = import ./alacritty.nix { inherit pkgs; };
-  programs.helix = import ./helix.nix { inherit pkgs; };
-  programs.zsh = import ./zsh.nix { inherit config lib; };
-  programs.zen-browser = import ./zen.nix { inherit pkgs; };
   programs.nh = rec {
     enable = true;
     clean.enable = true;
     flake = if pkgs.stdenv.isDarwin then "/Users/${user}/.config/nix" else "/home/${user}/.config/nix";
     darwinFlake = flake;
     osFlake = flake;
+  };
+
+  services.gpg-agent = {
+    enable = true;
+    pinentry.package = if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-rofi;
   };
 }

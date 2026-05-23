@@ -1,6 +1,8 @@
-{ pkgs }:
+{ pkgs, ... }:
 
 {
-  enable = true;
-  terminal = "${pkgs.alacritty}/bin/alacritty";
+  programs.rofi = {
+    enable = true;
+    terminal = "${pkgs.alacritty}/bin/alacritty";
+  };
 }

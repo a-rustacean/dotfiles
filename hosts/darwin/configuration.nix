@@ -6,6 +6,7 @@
   ...
 }:
 {
+  imports = [ ../../modules/aerospace.nix ];
   nix = {
     enable = true;
     settings = {
@@ -46,7 +47,4 @@
   };
 
   networking.hostName = hostname;
-
-  services.aerospace = import ../../modules/aerospace.nix { inherit pkgs; };
-  environment.systemPackages = [ pkgs.darwin.libiconv ];
 }

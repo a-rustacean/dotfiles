@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, ... }:
 let
   mkLockedAttrs = builtins.mapAttrs (
     _: value: {
@@ -28,131 +28,133 @@ let
   );
 in
 {
-  enable = true;
-  setAsDefaultBrowser = true;
-  policies = {
-    AutofillAddressEnabled = true;
-    AutofillCreditCardEnabled = false;
-    DisableAppUpdate = true;
-    DisableFeedbackCommands = true;
-    DisableFirefoxStudies = true;
-    DisablePocket = true;
-    DisableTelemetry = true;
-    DontCheckDefaultBrowser = true;
-    NoDefaultBookmarks = true;
-    OfferToSaveLogins = false;
-    EnableTrackingProtection = {
-      Value = true;
-      Locked = true;
-      Cryptomining = true;
-      Fingerprinting = true;
-    };
-    Preferences = mkLockedAttrs {
-      "browser.aboutConfig.showWarning" = false;
-      "browser.tabs.warnOnClose" = false;
-      "browser.ctrlTab.sortByRecentlyUsed" = true;
-      "media.videocontrols.picture-in-picture.video-toggle.enabled" = true;
-      # Disable swipe gestures (Browser:BackOrBackDuplicate, Browser:ForwardOrForwardDuplicate)
-      "browser.gesture.swipe.left" = "";
-      "browser.gesture.swipe.right" = "";
-      "browser.tabs.hoverPreview.enabled" = true;
-      "browser.newtabpage.activity-stream.feeds.topsites" = false;
-      "browser.topsites.contile.enabled" = false;
+  programs.zen-browser = {
+    enable = true;
+    setAsDefaultBrowser = true;
+    policies = {
+      AutofillAddressEnabled = true;
+      AutofillCreditCardEnabled = false;
+      DisableAppUpdate = true;
+      DisableFeedbackCommands = true;
+      DisableFirefoxStudies = true;
+      DisablePocket = true;
+      DisableTelemetry = true;
+      DontCheckDefaultBrowser = true;
+      NoDefaultBookmarks = true;
+      OfferToSaveLogins = false;
+      EnableTrackingProtection = {
+        Value = true;
+        Locked = true;
+        Cryptomining = true;
+        Fingerprinting = true;
+      };
+      Preferences = mkLockedAttrs {
+        "browser.aboutConfig.showWarning" = false;
+        "browser.tabs.warnOnClose" = false;
+        "browser.ctrlTab.sortByRecentlyUsed" = true;
+        "media.videocontrols.picture-in-picture.video-toggle.enabled" = true;
+        # Disable swipe gestures (Browser:BackOrBackDuplicate, Browser:ForwardOrForwardDuplicate)
+        "browser.gesture.swipe.left" = "";
+        "browser.gesture.swipe.right" = "";
+        "browser.tabs.hoverPreview.enabled" = true;
+        "browser.newtabpage.activity-stream.feeds.topsites" = false;
+        "browser.topsites.contile.enabled" = false;
 
-      "privacy.resistFingerprinting" = true;
-      "privacy.resistFingerprinting.randomization.canvas.use_siphash" = true;
-      "privacy.resistFingerprinting.randomization.daily_reset.enabled" = true;
-      "privacy.resistFingerprinting.randomization.daily_reset.private.enabled" = true;
-      "privacy.resistFingerprinting.block_mozAddonManager" = true;
-      "privacy.spoof_english" = 1;
+        "privacy.resistFingerprinting" = true;
+        "privacy.resistFingerprinting.randomization.canvas.use_siphash" = true;
+        "privacy.resistFingerprinting.randomization.daily_reset.enabled" = true;
+        "privacy.resistFingerprinting.randomization.daily_reset.private.enabled" = true;
+        "privacy.resistFingerprinting.block_mozAddonManager" = true;
+        "privacy.spoof_english" = 1;
 
-      "privacy.firstparty.isolate" = true;
-      "network.cookie.cookieBehavior" = 5;
-      "dom.battery.enabled" = false;
+        "privacy.firstparty.isolate" = true;
+        "network.cookie.cookieBehavior" = 5;
+        "dom.battery.enabled" = false;
 
-      "gfx.webrender.all" = true;
-      "network.http.http3.enabled" = true;
-      "network.socket.ip_addr_any.disabled" = true; # disallow bind to 0.0.0.0
-    };
-    ExtensionSettings = mkExtensionSettings {
-      # Extension to get IDs of other extensions
-      "queryamoid@kaply.com" = {
-        install_url = "https://github.com/mkaply/queryamoid/releases/download/v0.2/query_amo_addon_id-0.2-fx.xpi";
-        installation_mode = "force_installed";
-        default_area = "navbar";
-        private_browsing = true;
+        "gfx.webrender.all" = true;
+        "network.http.http3.enabled" = true;
+        "network.socket.ip_addr_any.disabled" = true; # disallow bind to 0.0.0.0
       };
-      "wappalyzer@crunchlabz.com" = mkExtensionEntry {
-        id = "wappalyzer";
-        pinned = true;
-      };
-      "uBlock0@raymondhill.net" = mkExtensionEntry {
-        id = "ublock-origin";
-        pinned = true;
-      };
-      "{a4c4eda4-fb84-4a84-b4a1-f7c1cbf2a1ad}" = "refined-github-";
-      "{85860b32-02a8-431a-b2b1-40fbd64c9c69}" = "github-file-icons";
-      "{762f9885-5a13-4abd-9c77-433dcd38b8fd}" = "return-youtube-dislikes";
-      "{74145f27-f039-47ce-a470-a662b129930a}" = "clearurls";
-      "github-no-more@ihatereality.space" = "github-no-more";
-      "github-repository-size@pranavmangal" = "gh-repo-size";
-      "@searchengineadremover" = "searchengineadremover";
-      "jid1-BoFifL9Vbdl2zQ@jetpack" = "decentraleyes";
-      "trackmenot@mrl.nyu.edu" = "trackmenot";
-      "{861a3982-bb3b-49c6-bc17-4f50de104da1}" = "custom-user-agent-revived";
-      "{3579f63b-d8ee-424f-bbb6-6d0ce3285e6a}" = "chameleon-ext";
-      "jid1-KKzOGWgsW3Ao4Q@jetpack" = "i-dont-care-about-cookies";
-      "sponsorBlocker@ajay.app" = "sponsorblock";
-    };
-  };
-  profiles.default = {
-    settings = {
-      "zen.workspaces.continue-where-left-off" = true;
-      "zen.view.compact.hide-tabbar" = true;
-      "zen.urlbar.behavior" = "float";
-      "zen.welcome-screen.seen" = true;
-    };
-    mods = [
-      "4ab93b88-151c-451b-a1b7-a1e0e28fa7f8" # No Sidebar Scrollbar
-      "e122b5d9-d385-4bf8-9971-e137809097d0" # No Top Sites
-      "253a3a74-0cc4-47b7-8b82-996a64f030d5" # Floating History
-    ];
-    search = {
-      force = true;
-      default = "google";
-      engines = {
-        mynixos = {
-          name = "Nixpkgs Search";
-          urls = [
-            {
-              template = "https://search.nixos.org/packages?channel=unstable&query={searchTerms}";
-            }
-          ];
-          icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-          definedAliases = [ "@nx" ];
+      ExtensionSettings = mkExtensionSettings {
+        # Extension to get IDs of other extensions
+        "queryamoid@kaply.com" = {
+          install_url = "https://github.com/mkaply/queryamoid/releases/download/v0.2/query_amo_addon_id-0.2-fx.xpi";
+          installation_mode = "force_installed";
+          default_area = "navbar";
+          private_browsing = true;
         };
-        github = {
-          name = "GitHub Search";
-          urls = [
-            {
-              template = "https://github.com/search?q={searchTerms}";
-            }
-          ];
-          definedAliases = [ "@gh" ];
+        "wappalyzer@crunchlabz.com" = mkExtensionEntry {
+          id = "wappalyzer";
+          pinned = true;
         };
-        youtube = {
-          name = "YouTube Search";
-          urls = [
-            {
-              template = "https://www.youtube.com/results?search_query={searchTerms}";
-            }
-          ];
-          definedAliases = [ "@yt" ];
+        "uBlock0@raymondhill.net" = mkExtensionEntry {
+          id = "ublock-origin";
+          pinned = true;
         };
+        "{a4c4eda4-fb84-4a84-b4a1-f7c1cbf2a1ad}" = "refined-github-";
+        "{85860b32-02a8-431a-b2b1-40fbd64c9c69}" = "github-file-icons";
+        "{762f9885-5a13-4abd-9c77-433dcd38b8fd}" = "return-youtube-dislikes";
+        "{74145f27-f039-47ce-a470-a662b129930a}" = "clearurls";
+        "github-no-more@ihatereality.space" = "github-no-more";
+        "github-repository-size@pranavmangal" = "gh-repo-size";
+        "@searchengineadremover" = "searchengineadremover";
+        "jid1-BoFifL9Vbdl2zQ@jetpack" = "decentraleyes";
+        "trackmenot@mrl.nyu.edu" = "trackmenot";
+        "{861a3982-bb3b-49c6-bc17-4f50de104da1}" = "custom-user-agent-revived";
+        "{3579f63b-d8ee-424f-bbb6-6d0ce3285e6a}" = "chameleon-ext";
+        "jid1-KKzOGWgsW3Ao4Q@jetpack" = "i-dont-care-about-cookies";
+        "sponsorBlocker@ajay.app" = "sponsorblock";
       };
     };
-    pinsForce = true;
-    pinsForceAction = "remove";
-    pins = { }; # no pins
+    profiles.default = {
+      settings = {
+        "zen.workspaces.continue-where-left-off" = true;
+        "zen.view.compact.hide-tabbar" = true;
+        "zen.urlbar.behavior" = "float";
+        "zen.welcome-screen.seen" = true;
+      };
+      mods = [
+        "4ab93b88-151c-451b-a1b7-a1e0e28fa7f8" # No Sidebar Scrollbar
+        "e122b5d9-d385-4bf8-9971-e137809097d0" # No Top Sites
+        "253a3a74-0cc4-47b7-8b82-996a64f030d5" # Floating History
+      ];
+      search = {
+        force = true;
+        default = "google";
+        engines = {
+          mynixos = {
+            name = "Nixpkgs Search";
+            urls = [
+              {
+                template = "https://search.nixos.org/packages?channel=unstable&query={searchTerms}";
+              }
+            ];
+            icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+            definedAliases = [ "@nx" ];
+          };
+          github = {
+            name = "GitHub Search";
+            urls = [
+              {
+                template = "https://github.com/search?q={searchTerms}";
+              }
+            ];
+            definedAliases = [ "@gh" ];
+          };
+          youtube = {
+            name = "YouTube Search";
+            urls = [
+              {
+                template = "https://www.youtube.com/results?search_query={searchTerms}";
+              }
+            ];
+            definedAliases = [ "@yt" ];
+          };
+        };
+      };
+      pinsForce = true;
+      pinsForceAction = "remove";
+      pins = { }; # no pins
+    };
   };
 }

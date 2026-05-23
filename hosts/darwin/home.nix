@@ -7,7 +7,7 @@
   imports = [ ../../modules/home.nix ];
 
   home = {
-    packages = [ pkgs.betterdisplay ];
+    packages = [ pkgs.betterdisplay pkgs.utm ];
 
     activation.setWallpaper = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       /usr/bin/osascript -e "

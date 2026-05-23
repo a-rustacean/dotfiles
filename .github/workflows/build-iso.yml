@@ -1,17 +1,3 @@
-# .github/workflows/build-iso.yml
-#
-# Builds the NixOS live ISO for both x86_64-linux and aarch64-linux.
-# Triggered only via manual workflow_dispatch.
-#
-# Prerequisites (set these as Actions secrets / variables):
-#   CACHIX_AUTH_TOKEN  – write token for your Cachix cache
-#   CACHIX_CACHE_NAME  – name of your Cachix cache  (e.g. "my-org")
-#
-# Runner notes:
-#   x86  → ubuntu-24.04          (free for all repos)
-#   arm  → ubuntu-24.04-arm      (free for PUBLIC repos; private repos need
-#                                  a paid "larger runner" with the arm64 label)
-
 name: Build NixOS ISO
 
 on:
@@ -59,12 +45,11 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v31
         with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
           extra_nix_config: |
             max-jobs = auto
             cores = 0
-            # Allow the build sandbox to use KVM if available (speeds up VM builds)
             system-features = nixos-test benchmark big-parallel kvm
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Cachix
         uses: cachix/cachix-action@v15
@@ -122,11 +107,11 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v31
         with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
           extra_nix_config: |
             max-jobs = auto
             cores = 0
             system-features = nixos-test benchmark big-parallel
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Cachix
         uses: cachix/cachix-action@v15

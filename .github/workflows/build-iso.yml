@@ -1,0 +1,150 @@
+# .github/workflows/build-iso.yml
+#
+# Builds the NixOS live ISO for both x86_64-linux and aarch64-linux.
+# Triggered only via manual workflow_dispatch.
+#
+# Prerequisites (set these as Actions secrets / variables):
+#   CACHIX_AUTH_TOKEN  – write token for your Cachix cache
+#   CACHIX_CACHE_NAME  – name of your Cachix cache  (e.g. "my-org")
+#
+# Runner notes:
+#   x86  → ubuntu-24.04          (free for all repos)
+#   arm  → ubuntu-24.04-arm      (free for PUBLIC repos; private repos need
+#                                  a paid "larger runner" with the arm64 label)
+
+name: Build NixOS ISO
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Which architecture to build"
+        required: true
+        default: "both"
+        type: choice
+        options:
+          - both
+          - x86_64
+          - aarch64
+
+jobs:
+  # ─────────────────────────────────────────────
+  # x86_64 build
+  # ─────────────────────────────────────────────
+  build-x86_64:
+    name: Build ISO (x86_64-linux)
+    runs-on: ubuntu-24.04
+    if: ${{ inputs.target == 'both' || inputs.target == 'x86_64' }}
+
+    permissions:
+      id-token: write   # required by some Cachix auth flows
+      contents: read
+
+    steps:
+      - name: Free up disk space
+        # GitHub's hosted runners ship with a lot of pre-installed software
+        # that eats into the ~14 GB available. Removing the biggest offenders
+        # gives Nix the headroom it needs for a full ISO build.
+        run: |
+          sudo rm -rf \
+            /opt/hostedtoolcache \
+            /usr/local/lib/android \
+            /usr/share/dotnet \
+            /usr/share/swift \
+            /usr/local/.ghcup
+          df -h
+
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
+            max-jobs = auto
+            cores = 0
+            # Allow the build sandbox to use KVM if available (speeds up VM builds)
+            system-features = nixos-test benchmark big-parallel kvm
+
+      - name: Set up Cachix
+        uses: cachix/cachix-action@v15
+        with:
+          name: ${{ vars.CACHIX_CACHE_NAME }}
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          # Push everything built in this job to the cache so subsequent runs
+          # (and other machines) can pull pre-built store paths.
+          pushFilter: ".*"
+
+      - name: Build ISO (x86_64-linux)
+        run: |
+          nix build .#nixosConfigurations.live.config.system.build.isoImage \
+            --print-build-logs \
+            --show-trace
+
+      - name: Upload ISO as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nixos-iso-x86_64
+          # The build result is a symlink; resolve it so upload-artifact
+          # can find the actual .iso file inside the iso/ subdirectory.
+          path: result/iso/*.iso
+          if-no-files-found: error
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  # aarch64 build
+  # ─────────────────────────────────────────────
+  build-aarch64:
+    name: Build ISO (aarch64-linux)
+    # ubuntu-24.04-arm is free for PUBLIC repositories.
+    # For PRIVATE repositories replace with a paid arm64 larger runner label,
+    # e.g. "ubuntu-24.04-arm64-4core" (organisation/enterprise plan required).
+    runs-on: ubuntu-24.04-arm
+    if: ${{ inputs.target == 'both' || inputs.target == 'aarch64' }}
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Free up disk space
+        run: |
+          sudo rm -rf \
+            /opt/hostedtoolcache \
+            /usr/local/lib/android \
+            /usr/share/dotnet \
+            /usr/share/swift \
+            /usr/local/.ghcup
+          df -h
+
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
+            max-jobs = auto
+            cores = 0
+            system-features = nixos-test benchmark big-parallel
+
+      - name: Set up Cachix
+        uses: cachix/cachix-action@v15
+        with:
+          name: ${{ vars.CACHIX_CACHE_NAME }}
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          pushFilter: ".*"
+
+      - name: Build ISO (aarch64-linux)
+        run: |
+          nix build .#nixosConfigurations.live.config.system.build.isoImage \
+            --print-build-logs \
+            --show-trace
+
+      - name: Upload ISO as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nixos-iso-aarch64
+          path: result/iso/*.iso
+          if-no-files-found: error
+          retention-days: 7

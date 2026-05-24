@@ -19,8 +19,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    ashell = {
-      url = "github:MalpenZibo/ashell";
+    quickshell = {
+      url = "github:quickshell-mirror/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

@@ -10,7 +10,7 @@
     ../../modules/rofi.nix
     ../../modules/hyprpaper.nix
     ../../modules/dunst.nix
-    ../../modules/ashell.nix
+    ../../modules/quickshell.nix
   ];
 
   home = {

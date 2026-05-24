@@ -58,6 +58,7 @@
       lld
       protobuf
       xz
+      jq
       # JS/TS
       nodejs_24
       typescript

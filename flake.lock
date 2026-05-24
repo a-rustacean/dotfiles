@@ -33,43 +33,6 @@
         "type": "github"
       }
     },
-    "ashell": {
-      "inputs": {
-        "crane": "crane",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay"
-      },
-      "locked": {
-        "lastModified": 1779122909,
-        "narHash": "sha256-NHuBqE4O7cVTtA6bxgaurnrvh3oBaxONuTlb/sXgybc=",
-        "owner": "MalpenZibo",
-        "repo": "ashell",
-        "rev": "1dd01c2a73557ca2bd6892c5f386bc042848be80",
-        "type": "github"
-      },
-      "original": {
-        "owner": "MalpenZibo",
-        "repo": "ashell",
-        "type": "github"
-      }
-    },
-    "crane": {
-      "locked": {
-        "lastModified": 1770169865,
-        "narHash": "sha256-iPiy13xzDQ9GjpOez+NNIjh/qjl7i4RDf9dF2x5mF9I=",
-        "owner": "ipetkov",
-        "repo": "crane",
-        "rev": "8254ccf3b5b5131890ee073776f2e61c6d1e55d4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ipetkov",
-        "repo": "crane",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -511,37 +474,36 @@
         "type": "github"
       }
     },
-    "root": {
-      "inputs": {
-        "ashell": "ashell",
-        "home-manager": "home-manager",
-        "hyprland": "hyprland",
-        "nix-darwin": "nix-darwin",
-        "nixpkgs": "nixpkgs",
-        "zen-browser": "zen-browser",
-        "zig": "zig",
-        "zls": "zls"
-      }
-    },
-    "rust-overlay": {
+    "quickshell": {
       "inputs": {
         "nixpkgs": [
-          "ashell",
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1770174315,
-        "narHash": "sha256-GUaMxDmJB1UULsIYpHtfblskVC6zymAaQ/Zqfo+13jc=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "095c394bb91342882f27f6c73f64064fb9de9f2a",
+        "lastModified": 1779430452,
+        "narHash": "sha256-zTslhsxLqUlRTML506iougTGzyR38Fzhzn7t4KDEuuE=",
+        "owner": "quickshell-mirror",
+        "repo": "quickshell",
+        "rev": "4b4fca3224ab977dc515ac0bb78d00b3dfa71e00",
         "type": "github"
       },
       "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
+        "owner": "quickshell-mirror",
+        "repo": "quickshell",
         "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "home-manager": "home-manager",
+        "hyprland": "hyprland",
+        "nix-darwin": "nix-darwin",
+        "nixpkgs": "nixpkgs",
+        "quickshell": "quickshell",
+        "zen-browser": "zen-browser",
+        "zig": "zig",
+        "zls": "zls"
       }
     },
     "systems": {

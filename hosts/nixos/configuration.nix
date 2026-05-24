@@ -44,7 +44,7 @@
     pulse.enable = true;
   };
 
-  users.users."${user}" = {
+  users.users.${user} = {
     isNormalUser = true;
     extraGroups = [
       "networkmanager"

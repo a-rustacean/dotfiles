@@ -72,7 +72,7 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              users."${user}" = import ./hosts/${host}/home.nix;
+              users.${user} = import ./hosts/${host}/home.nix;
               extraSpecialArgs = {
                 inherit
                   user

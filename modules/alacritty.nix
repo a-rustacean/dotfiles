@@ -24,7 +24,6 @@
         };
       };
       window = {
-        opacity = 0.8;
         decorations = if pkgs.stdenv.isDarwin then "Buttonless" else "None";
         dynamic_padding = true;
         startup_mode = "Windowed";

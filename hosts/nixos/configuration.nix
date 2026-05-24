@@ -52,6 +52,7 @@
     ];
     packages = [ ];
     shell = pkgs.zsh;
+    initialPassword = user; # username is the default password
   };
 
   programs.zsh.enable = true;

@@ -5,6 +5,7 @@
   ...
 }:
 {
+  imports = [ ../../modules/hyprland.nix ];
   system.stateVersion = "26.05";
 
   boot.loader.systemd-boot.enable = true;
@@ -84,9 +85,4 @@
       "x-systemd.automount"
     ];
   };
-
-  environment.pathsToLink = [
-    "/share/applications"
-    "/share/xdg-desktop-portal"
-  ];
 }

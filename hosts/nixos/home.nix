@@ -8,7 +8,6 @@
   imports = [
     ../../modules/home.nix
     ../../modules/rofi.nix
-    ../../modules/hyprland.nix
     ../../modules/hyprpaper.nix
     ../../modules/hypridle.nix
     ../../modules/hyprlock.nix

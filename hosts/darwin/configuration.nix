@@ -1,5 +1,4 @@
 {
-  pkgs,
   system,
   user,
   hostname,
@@ -27,6 +26,7 @@
     primaryUser = user;
     stateVersion = 6;
     nixpkgsRelease = "26.05";
+
     defaults = {
       dock.autohide = true;
       dock.mru-spaces = false;

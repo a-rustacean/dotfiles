@@ -9,6 +9,9 @@
     ../../modules/home.nix
     ../../modules/rofi.nix
     ../../modules/hyprpaper.nix
+    ../../modules/hypridle.nix
+    ../../modules/hyprlock.nix
+    ../../modules/hyprsunset.nix
     ../../modules/dunst.nix
     ../../modules/quickshell.nix
   ];
@@ -19,10 +22,11 @@
 
     packages = with pkgs; [
       hyprpaper
+      hyprshutdown
+      hyprpicker
       cliphist
       wl-clipboard
       noto-fonts
-      hyprshutdown
       ranger
     ];
 

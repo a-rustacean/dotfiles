@@ -122,7 +122,7 @@ in
         force = true;
         default = "google";
         engines = {
-          mynixos = {
+          nixpkgs = {
             name = "Nixpkgs Search";
             urls = [
               {
@@ -131,6 +131,16 @@ in
             ];
             icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
             definedAliases = [ "@nx" ];
+          };
+          home-manager = {
+            name = "Home Manager Search";
+            urls = [
+              {
+                template = "https://home-manager-options.extranix.com/?query={searchTerms}&release=master";
+              }
+            ];
+            icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+            definedAliases = [ "@hm" ];
           };
           github = {
             name = "GitHub Search";

@@ -40,8 +40,8 @@ hl.config({
 
     blur             = {
       enabled           = true,
-      size              = 8,
-      passes            = 2,
+      size              = 6,
+      passes            = 1,
       vibrancy          = 0.1696,
       new_optimizations = true,
       ignore_opacity    = true,
@@ -156,7 +156,7 @@ hl.window_rule({
   name = "transparent-alacritty",
   match = { class = "Alacritty" },
 
-  opacity = "override 0.95 override 0.85",
+  opacity = "override 0.75 override 0.60",
 })
 
 hl.window_rule({

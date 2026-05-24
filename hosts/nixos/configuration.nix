@@ -68,4 +68,5 @@
     LIBGL_ALWAYS_SOFTWARE = "1";
   };
 
+  services.openssh.enable = true;
 }

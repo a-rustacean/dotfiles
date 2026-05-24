@@ -49,6 +49,7 @@ in
         Fingerprinting = true;
       };
       Preferences = mkLockedAttrs {
+        "ui.systemUsesDarkTheme" = true;
         "browser.aboutConfig.showWarning" = false;
         "browser.tabs.warnOnClose" = false;
         "browser.ctrlTab.sortByRecentlyUsed" = true;

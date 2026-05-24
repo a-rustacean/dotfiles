@@ -12,10 +12,10 @@
     ../../modules/dunst.nix
     ../../modules/ashell.nix
   ];
+
   home = {
     username = user;
     homeDirectory = "/home/${user}";
-    stateVersion = "26.05";
 
     packages = with pkgs; [
       hyprpaper

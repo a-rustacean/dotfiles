@@ -28,9 +28,9 @@ jobs:
 
     steps:
       - name: Free up disk space
-        # GitHub's hosted runners ship with a lot of pre-installed software
-        # that eats into the ~14 GB available. Removing the biggest offenders
-        # gives Nix the headroom it needs for a full ISO build.
+        # GitHub runners ship with a lot of pre-installed software that eats
+        # into the ~14 GB available. Removing the biggest offenders gives Nix
+        # the headroom it needs for a full ISO build.
         run: |
           sudo rm -rf \
             /opt/hostedtoolcache \
@@ -40,7 +40,7 @@ jobs:
             /usr/local/.ghcup
           df -h
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
@@ -52,13 +52,10 @@ jobs:
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Cachix
-        uses: cachix/cachix-action@v15
+        uses: cachix/cachix-action@v17
         with:
           name: ${{ vars.CACHIX_CACHE_NAME }}
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          # Push everything built in this job to the cache so subsequent runs
-          # (and other machines) can pull pre-built store paths.
-          pushFilter: ".*"
 
       - name: Build ISO (x86_64-linux)
         run: |
@@ -66,12 +63,15 @@ jobs:
             --print-build-logs \
             --show-trace
 
+      - name: Push build closure to Cachix
+        run: |
+          nix path-info --recursive ./result \
+            | cachix push ${{ vars.CACHIX_CACHE_NAME }}
+
       - name: Upload ISO as artifact
         uses: actions/upload-artifact@v4
         with:
           name: nixos-iso-x86_64
-          # The build result is a symlink; resolve it so upload-artifact
-          # can find the actual .iso file inside the iso/ subdirectory.
           path: result/iso/*.iso
           if-no-files-found: error
           retention-days: 7
@@ -102,7 +102,7 @@ jobs:
             /usr/local/.ghcup
           df -h
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
@@ -114,17 +114,21 @@ jobs:
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Cachix
-        uses: cachix/cachix-action@v15
+        uses: cachix/cachix-action@v17
         with:
           name: ${{ vars.CACHIX_CACHE_NAME }}
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          pushFilter: ".*"
 
       - name: Build ISO (aarch64-linux)
         run: |
           nix build .#nixosConfigurations.live.config.system.build.isoImage \
             --print-build-logs \
             --show-trace
+
+      - name: Push build closure to Cachix
+        run: |
+          nix path-info --recursive ./result \
+            | cachix push ${{ vars.CACHIX_CACHE_NAME }}
 
       - name: Upload ISO as artifact
         uses: actions/upload-artifact@v4

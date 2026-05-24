@@ -2,8 +2,6 @@
   pkgs,
   user,
   hostname,
-  inputs,
-  system,
   ...
 }:
 {
@@ -64,13 +62,6 @@
 
   programs.zsh.enable = true;
 
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-    package = inputs.hyprland.packages.${system}.hyprland;
-    portalPackage = inputs.hyprland.packages.${system}.xdg-desktop-portal-hyprland;
-  };
-
   environment.sessionVariables = {
     LIBGL_ALWAYS_SOFTWARE = "1";
   };
@@ -89,4 +80,9 @@
       "x-systemd.automount"
     ];
   };
+
+  environment.pathsToLink = [
+    "/share/applications"
+    "/share/xdg-desktop-portal"
+  ];
 }

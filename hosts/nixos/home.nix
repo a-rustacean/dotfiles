@@ -41,7 +41,7 @@
   services.hyprpolkitagent.enable = true;
 
   dconf.settings."org/gnome/desktop/interface" = {
-    gtk-theme = "Adwaita";
+    gtk-theme = "Adwaita Dark";
     icon-theme = "Flat-Remix-Red-Dark";
     font-name = "Noto Sans Medium 11";
     document-font-name = "Noto Sans Medium 11";

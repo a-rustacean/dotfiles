@@ -61,6 +61,7 @@
   };
 
   programs.zsh.enable = true;
+  programs.dconf.enable = true;
 
   environment.sessionVariables = {
     LIBGL_ALWAYS_SOFTWARE = "1";

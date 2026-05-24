@@ -15,6 +15,7 @@
     ../../modules/hyprsunset.nix
     ../../modules/dunst.nix
     ../../modules/quickshell.nix
+    ../../modules/gtk.nix
   ];
 
   home = {
@@ -40,12 +41,4 @@
   };
 
   services.hyprpolkitagent.enable = true;
-
-  dconf.settings."org/gnome/desktop/interface" = {
-    gtk-theme = "Adwaita Dark";
-    icon-theme = "Flat-Remix-Red-Dark";
-    font-name = "Noto Sans Medium 11";
-    document-font-name = "Noto Sans Medium 11";
-    monospace-font-name = "Noto Sans Mono Medium 11";
-  };
 }

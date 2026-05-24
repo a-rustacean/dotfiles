@@ -13,5 +13,4 @@
       color-scheme = "prefer-dark";
     };
   };
-
 }

@@ -12,6 +12,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.zfs.forceImportRoot = false;
+  boot.kernelModules = [ "9p" "9pnet_virtio" ];
 
   nix.settings.experimental-features = [
     "nix-command"
@@ -69,4 +70,17 @@
   };
 
   services.openssh.enable = true;
+
+  fileSystems."/mnt/share" = {
+    device = "share";
+    fsType = "9p";
+    options = [
+      "trans=virtio"
+      "version=9p2000.L"
+      "msize=104857600"
+      "cache=loose"
+      "nofail"
+      "x-systemd.automount"
+    ];
+  };
 }

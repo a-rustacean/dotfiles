@@ -68,8 +68,4 @@
     LIBGL_ALWAYS_SOFTWARE = "1";
   };
 
-  environment.pathsToLink = [
-    "/share/applications"
-    "/share/xdg-desktop-portal"
-  ];
 }

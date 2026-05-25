@@ -109,10 +109,12 @@ in
     };
     profiles.default = {
       settings = {
+        "zen.ctrlTab.show-pending-tabs" = true;
         "zen.workspaces.continue-where-left-off" = true;
         "zen.view.compact.hide-tabbar" = true;
         "zen.urlbar.behavior" = "float";
         "zen.welcome-screen.seen" = true;
+        "zen.theme.use-system-colors" = false;
       };
       mods = [
         "4ab93b88-151c-451b-a1b7-a1e0e28fa7f8" # No Sidebar Scrollbar

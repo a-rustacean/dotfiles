@@ -15,7 +15,6 @@
       theme = "powerlevel10k/powerlevel10k";
       plugins = [
         "git"
-        "zsh-autocomplete"
         "zsh-autopair"
         "zsh-autosuggestions"
         "node"

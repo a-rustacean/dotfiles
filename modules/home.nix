@@ -87,10 +87,6 @@
         source = "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
         recursive = true;
       };
-      ".omz-custom/plugins/zsh-autocomplete" = {
-        source = "${pkgs.zsh-autocomplete}/share/zsh-autocomplete";
-        recursive = true;
-      };
       ".omz-custom/plugins/zsh-autosuggestions" = {
         source = "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions";
         recursive = true;

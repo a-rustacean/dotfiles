@@ -15,6 +15,7 @@
     ../../modules/dunst.nix
     ../../modules/quickshell.nix
     ../../modules/gtk.nix
+    ../../modules/cursor.nix
   ];
 
   home = {

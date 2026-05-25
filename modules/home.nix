@@ -59,6 +59,9 @@
       protobuf
       xz
       jq
+      zip
+      unzip
+      tarlz
       # JS/TS
       nodejs_24
       typescript

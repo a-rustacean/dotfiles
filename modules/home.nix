@@ -11,6 +11,7 @@
     ./git.nix
     ./alacritty.nix
     ./helix.nix
+    ./opencode.nix
     ./zsh.nix
     inputs.zen-browser.homeModules.beta
     ./zen.nix

@@ -1,92 +1,99 @@
 { pkgs, ... }:
-let
-  config = import ../config.nix { };
-in
 {
   services.aerospace = {
     enable = true;
     settings = {
-      after-login-command = [ ];
+      config-version = 2;
       after-startup-command = [ ];
+      start-at-login = false;
+
+      enable-normalization-flatten-containers = true;
+      enable-normalization-opposite-orientation-for-nested-containers = true;
+
       accordion-padding = 30;
+
       default-root-container-layout = "tiles";
       default-root-container-orientation = "auto";
+
       on-focused-monitor-changed = [ "move-mouse monitor-lazy-center" ];
-      automatically-unhide-macos-hidden-apps = false;
+      automatically-unhide-macos-hidden-apps = true;
+
+      persistent-workspaces = [
+        "1"
+        "2"
+        "3"
+        "4"
+        "5"
+        "6"
+        "7"
+        "8"
+        "9"
+      ];
+
+      on-mode-changed = [ ];
+
+      focus-follows-mouse.enabled = false;
+
       key-mapping.preset = "qwerty";
 
       gaps = {
         outer = {
-          left = config.wm.gaps.outer + config.wm.gaps.inner;
-          bottom = config.wm.gaps.outer + config.wm.gaps.inner;
-          top = config.wm.gaps.outer + config.wm.gaps.inner;
-          right = config.wm.gaps.outer + config.wm.gaps.inner;
+          left = 8;
+          bottom = 8;
+          top = 8;
+          right = 8;
         };
         inner = {
-          vertical = config.wm.gaps.inner;
-          horizontal = config.wm.gaps.inner;
+          vertical = 8;
+          horizontal = 8;
         };
       };
+
       mode.main.binding = {
-        "${config.wm.modifier}-enter" = "exec-and-forget ${pkgs.alacritty}/bin/alacritty";
-        "${config.wm.modifier}-slash" = "layout tiles horizontal vertical";
-        "${config.wm.modifier}-comma" = "layout accordion horizontal vertical";
+        "alt-enter" = "exec-and-forget ${pkgs.alacritty}/bin/alacritty";
 
-        "${config.wm.modifier}-${config.keybindings.movement.left}" = "focus left";
-        "${config.wm.modifier}-${config.keybindings.movement.down}" = "focus down";
-        "${config.wm.modifier}-${config.keybindings.movement.up}" = "focus up";
-        "${config.wm.modifier}-${config.keybindings.movement.right}" = "focus right";
+        "alt-t" = "layout tiles horizontal vertical";
 
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-${config.keybindings.movement.left}" =
-          "move left";
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-${config.keybindings.movement.down}" =
-          "move down";
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-${config.keybindings.movement.up}" =
-          "move up";
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-${config.keybindings.movement.right}" =
-          "move right";
+        "alt-minus" = "resize smart -50";
+        "alt-equal" = "resize smart +50";
 
-        "${config.wm.modifier}-minus" = "resize smart -50";
-        "${config.wm.modifier}-equal" = "resize smart +50";
+        "alt-h" = "focus left";
+        "alt-j" = "focus down";
+        "alt-k" = "focus up";
+        "alt-l" = "focus right";
 
-        "${config.wm.modifier}-1" = "workspace 1";
-        "${config.wm.modifier}-2" = "workspace 2";
-        "${config.wm.modifier}-3" = "workspace 3";
-        "${config.wm.modifier}-4" = "workspace 4";
-        "${config.wm.modifier}-5" = "workspace 5";
-        "${config.wm.modifier}-6" = "workspace 6";
-        "${config.wm.modifier}-7" = "workspace 7";
-        "${config.wm.modifier}-8" = "workspace 8";
-        "${config.wm.modifier}-9" = "workspace 9";
+        "alt-shift-h" = "move left";
+        "alt-shift-j" = "move down";
+        "alt-shift-k" = "move up";
+        "alt-shift-l" = "move right";
 
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-1" = "move-node-to-workspace 1";
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-2" = "move-node-to-workspace 2";
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-3" = "move-node-to-workspace 3";
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-4" = "move-node-to-workspace 4";
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-5" = "move-node-to-workspace 5";
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-6" = "move-node-to-workspace 6";
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-7" = "move-node-to-workspace 7";
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-8" = "move-node-to-workspace 8";
-        "${config.wm.modifier}-${config.wm.secondary_modifier}-9" = "move-node-to-workspace 9";
+        "alt-ctrl-h" = "join-with left";
+        "alt-ctrl-j" = "join-with down";
+        "alt-ctrl-k" = "join-with up";
+        "alt-ctrl-l" = "join-with right";
 
-        "${config.wm.modifier}-f" = "fullscreen";
-      }
-      // (
-        if config.keybindings.movement.use_arrows then
-          {
-            "${config.wm.modifier}-left" = "focus left";
-            "${config.wm.modifier}-down" = "focus down";
-            "${config.wm.modifier}-up" = "focus up";
-            "${config.wm.modifier}-right" = "focus right";
+        "alt-1" = "workspace 1";
+        "alt-2" = "workspace 2";
+        "alt-3" = "workspace 3";
+        "alt-4" = "workspace 4";
+        "alt-5" = "workspace 5";
+        "alt-6" = "workspace 6";
+        "alt-7" = "workspace 7";
+        "alt-8" = "workspace 8";
+        "alt-9" = "workspace 9";
 
-            "${config.wm.modifier}-${config.wm.secondary_modifier}-left" = "move left";
-            "${config.wm.modifier}-${config.wm.secondary_modifier}-down" = "move down";
-            "${config.wm.modifier}-${config.wm.secondary_modifier}-up" = "move up";
-            "${config.wm.modifier}-${config.wm.secondary_modifier}-right" = "move right";
-          }
-        else
-          { }
-      );
+        "alt-shift-1" = "move-node-to-workspace 1";
+        "alt-shift-2" = "move-node-to-workspace 2";
+        "alt-shift-3" = "move-node-to-workspace 3";
+        "alt-shift-4" = "move-node-to-workspace 4";
+        "alt-shift-5" = "move-node-to-workspace 5";
+        "alt-shift-6" = "move-node-to-workspace 6";
+        "alt-shift-7" = "move-node-to-workspace 7";
+        "alt-shift-8" = "move-node-to-workspace 8";
+        "alt-shift-9" = "move-node-to-workspace 9";
+
+        "alt-f" = "fullscreen";
+      };
     };
   };
 }

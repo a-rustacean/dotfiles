@@ -1,5 +1,5 @@
 {
-  description = "NixOS and Nix-Darwin configuration";
+  description = "Nix-Darwin configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -12,27 +12,6 @@
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprland = {
-      url = "github:hyprwm/Hyprland/v0.55.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    quickshell = {
-      url = "github:quickshell-mirror/quickshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    zig = {
-      url = "github:silversquirl/zig-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    zls = {
-      url = "github:zigtools/zls";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.zig-flake.follows = "zig";
     };
 
     zen-browser = {
@@ -53,9 +32,11 @@
     }:
     let
       user = "dilshad";
-      hostname = "work";
-
-      mkSystem = system: host: {
+      hostname = "macos";
+      system = "aarch64-darwin";
+    in
+    {
+      darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
         inherit system;
         specialArgs = {
           inherit
@@ -66,13 +47,13 @@
             ;
         };
         modules = [
-          ./hosts/${host}
-          home-manager."${host}Modules".home-manager
+          ./hosts/darwin
+          home-manager.darwinModules.home-manager
           {
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              users.${user} = import ./hosts/${host}/home.nix;
+              users.${user} = import ./hosts/darwin/home.nix;
               extraSpecialArgs = {
                 inherit
                   user
@@ -85,35 +66,6 @@
           }
         ];
       };
-    in
-    {
-      packages = builtins.mapAttrs (system: pkgs: {
-        nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem (mkSystem system "nixos");
-        darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem (mkSystem system "darwin");
-
-        nixosConfigurations.live = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit
-              user
-              hostname
-              inputs
-              system
-              ;
-          };
-          modules = [
-            (
-              { modulesPath, ... }:
-              {
-                imports = [
-                  (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
-                  ./hosts/nixos/configuration.nix
-                ];
-              }
-            )
-          ];
-        };
-      }) nixpkgs.legacyPackages;
 
       formatter = builtins.mapAttrs (_: pkgs: pkgs.nixfmt-tree) nixpkgs.legacyPackages;
     };

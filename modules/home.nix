@@ -3,7 +3,6 @@
   pkgs,
   user,
   inputs,
-  system,
   ...
 }:
 
@@ -76,9 +75,10 @@
       uv
       # Git
       git-lfs
+      gh
       # zig
-      inputs.zig.packages.${system}.nightly
-      inputs.zls.packages.${system}.zls
+      zig
+      zls
     ];
 
     file = {

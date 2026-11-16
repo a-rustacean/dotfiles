@@ -1,6 +1,5 @@
 import Quickshell
 import Quickshell.Hyprland
-import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
@@ -9,6 +8,8 @@ import QtQuick.Effects
 import "config.js" as Config
 
 PanelWindow {
+    id: root
+
     WlrLayershell.namespace: "quickshell"
 
     anchors {
@@ -19,6 +20,14 @@ PanelWindow {
     color: "transparent"
 
     implicitHeight: Config.bar.height
+    property date currentDateTime: new Date()
+
+    Timer {
+        interval: 1000
+        running: true
+        repeat: true
+        onTriggered: root.currentDateTime = new Date()
+    }
 
     BackgroundEffect.blurRegion: Region {
         id: barBlurRegion
@@ -65,9 +74,15 @@ PanelWindow {
                     width: Math.min(title.implicitWidth, Config.bar.titleMaxWidth)
                     elide: Text.ElideRight
                     anchors.centerIn: parent
-                    text: ToplevelManager.activeToplevel
-                    ? DesktopEntries.heuristicLookup(ToplevelManager.activeToplevel.appId).name
-                    : "Desktop"
+                    text: {
+                        const active = ToplevelManager.activeToplevel;
+                        if (!active)
+                            return "Desktop";
+
+                        return DesktopEntries.heuristicLookup(active.appId)?.name
+                            || active.appId
+                            || "Unknown application";
+                    }
                     color: Config.colors.text
                     font.family: Config.bar.fontFamily
                     font.pixelSize: Config.bar.fontSize
@@ -130,22 +145,7 @@ PanelWindow {
                     font.pixelSize: Config.bar.fontSize
 
                     anchors.centerIn: parent
-
-                    Process {
-                        id: timeProc
-                        command: ["date", "+%I:%M %p"]
-                        running: true
-                        stdout: StdioCollector {
-                            onStreamFinished: time.text = text.trim();
-                        }
-                    }
-
-                    Timer {
-                        interval: 200
-                        running: true
-                        repeat: true
-                        onTriggered: timeProc.running = true
-                    }
+                    text: Qt.formatDateTime(root.currentDateTime, "hh:mm AP")
                 }
             }
 
@@ -159,22 +159,7 @@ PanelWindow {
                     font.pixelSize: Config.bar.fontSize
 
                     anchors.centerIn: parent
-
-                    Process {
-                        id: dateProc
-                        command: ["date", "+%b %d, %Y"]
-                        running: true
-                        stdout: StdioCollector {
-                            onStreamFinished: date.text = text.trim();
-                        }
-                    }
-
-                    Timer {
-                        interval: 200
-                        running: true
-                        repeat: true
-                        onTriggered: dateProc.running = true
-                    }
+                    text: Qt.formatDateTime(root.currentDateTime, "MMM dd, yyyy")
                 }
             }
         }

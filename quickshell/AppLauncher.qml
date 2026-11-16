@@ -3,7 +3,6 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 import "config.js" as Config
@@ -70,7 +69,7 @@ Scope {
 
         BackgroundEffect.blurRegion: Region {
             item: launcherBox
-            radius: Config.launcher.rounding
+            radius: Config.ui.rounding
         }
 
         anchors {
@@ -90,10 +89,10 @@ Scope {
             anchors.centerIn: parent
             width: Config.launcher.width
             height: Config.launcher.height
-            radius: Config.launcher.rounding
+            radius: Config.ui.rounding
             color: Config.launcher.background
             border.color: Config.colors.surface1
-            border.width: Config.launcher.borderWidth
+            border.width: Config.ui.borderWidth
 
             ColumnLayout {
                 anchors.fill: parent
@@ -103,13 +102,16 @@ Scope {
                 Rectangle {
                     Layout.fillWidth: true
                     height: Config.launcher.searchHeight
-                    radius: Config.launcher.searchRounding
-                    color: Config.colors.surface0
-                    border.color: searchInput.activeFocus ? Config.colors.blue : Config.colors.surface1
-                    border.width: Config.launcher.borderWidth
+                    radius: Config.ui.rounding
+                    color: Config.launcher.background
+                    border.color: searchInput.activeFocus ? Config.colors.text : Config.colors.surface1
+                    border.width: Config.ui.borderWidth
 
                     Behavior on border.color {
-                        ColorAnimation { duration: Config.launcher.animationDuration }
+                        ColorAnimation {
+                            duration: Config.ui.animationDuration
+                            easing.type: Easing.OutQuint
+                        }
                     }
 
                     RowLayout {
@@ -119,7 +121,7 @@ Scope {
                         spacing: Config.launcher.searchSpacing
 
                         Text {
-                            text: ""
+                            text: ""
                             color: Config.colors.overlay1
                             font.pixelSize: Config.launcher.searchIconFontSize
                             font.family: root.font
@@ -143,7 +145,7 @@ Scope {
                                 text: "Type to search..."
                                 color: Config.colors.overlay1
                                 font: parent.font
-                                visible: !parent.text && !parent.activeFocus
+                                visible: !parent.text
                                 verticalAlignment: Text.AlignVCenter
                             }
 
@@ -201,7 +203,7 @@ Scope {
 
                         width: resultsList.width
                         height: Config.launcher.itemHeight
-                        radius: Config.launcher.itemRounding
+                        radius: Config.ui.rounding
                         color: root.selectedIndex === delegateRoot.index ? Config.colors.surface1 : "transparent"
 
                         RowLayout {
@@ -223,8 +225,8 @@ Scope {
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: ""
-                                    color: Config.colors.blue
+                                    text: (delegateRoot.modelData.name || "?").charAt(0).toUpperCase()
+                                    color: Config.colors.text
                                     font.pixelSize: Config.launcher.iconFallbackFontSize
                                     font.family: root.font
                                     visible: (delegateRoot.modelData.icon ?? "") === ""
@@ -238,7 +240,7 @@ Scope {
 
                                 Text {
                                     text: delegateRoot.modelData.name ?? ""
-                                    color: root.selectedIndex === delegateRoot.index ? Config.colors.text : Config.colors.subtext1
+                                    color: root.selectedIndex === delegateRoot.index ? Config.colors.text : Config.colors.subtext0
                                     font.pixelSize: Config.launcher.itemFontSize
                                     font.family: root.font
                                     font.bold: root.selectedIndex === delegateRoot.index

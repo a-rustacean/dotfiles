@@ -42,6 +42,9 @@ const ui = {
   animationDuration: 185,
   // 0 = fully transparent, 1 = opaque.
   backgroundOpacity: 0.55,
+  selectedBackground: colors.text,
+  selectedForeground: colors.base,
+  selectedSecondary: colors.surface0,
 };
 
 const bar = {
@@ -67,14 +70,10 @@ const launcher = {
 
   width: 580,
   height: 480,
-  rounding: ui.rounding,
-  borderWidth: ui.borderWidth,
   padding: 16,
   spacing: 12,
-  animationDuration: 150,
 
   searchHeight: 44,
-  searchRounding: ui.rounding,
   searchPadding: 14,
   searchSpacing: 10,
   searchFontSize: 15,
@@ -84,7 +83,6 @@ const launcher = {
 
   listSpacing: 2,
   itemHeight: 44,
-  itemRounding: ui.rounding,
   itemPadding: 12,
   itemSpacing: 12,
   itemInfoSpacing: 1,
@@ -94,4 +92,22 @@ const launcher = {
   iconFallbackFontSize: 20,
 
   emptyFontSize: 14,
+};
+
+const quickSettings = {
+  menuWidth: 340,
+  menuHeight: 480,
+  menuGap: 8,
+  screenMargin: 12,
+  menuPadding: 12,
+  menuSpacing: 8,
+  sectionSpacing: 10,
+  rowHeight: 60,
+  audioRowInset: 6,
+  buttonHeight: 28,
+  titleFontSize: 14,
+  bodyFontSize: 12,
+  smallFontSize: 10,
+  iconFontSize: 16,
+  sliderWidth: 112,
 };

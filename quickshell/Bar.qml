@@ -9,6 +9,8 @@ import QtQuick.Effects
 import "config.js" as Config
 
 PanelWindow {
+    WlrLayershell.namespace: "quickshell"
+
     anchors {
         top: true
         left: true
@@ -26,7 +28,8 @@ PanelWindow {
                     const visit = item => {
                         for (let i = 0; i < item.children.length; i++) {
                             const child = item.children[i];
-                            if (child.blurRegion) barBlurRegion.regions.push(child.blurRegion);
+                            if (child.blurRegion && child.blurRegionEnabled !== false)
+                                barBlurRegion.regions.push(child.blurRegion);
                             visit(child);
                         }
                     };
@@ -88,12 +91,15 @@ PanelWindow {
                     property bool isActive: Hyprland.focusedWorkspace?.id === (index + 1)
 
                     active: isActive
+                    selected: isActive
                     disabled: !workspace
 
                     Text {
                         anchors.centerIn: parent
                         text: index + 1
-                        color: workspace ? Config.colors.text : Config.colors.subtext0
+                        color: isActive
+                            ? Config.ui.selectedForeground
+                            : workspace ? Config.colors.text : Config.colors.subtext0
                         font.family: Config.bar.fontFamily
                         font.pixelSize: Config.bar.fontSize
                     }
@@ -111,6 +117,8 @@ PanelWindow {
         RowLayout {
             id: rightItems
             anchors.right: parent.right
+
+            QuickSettings {}
 
             BarItem {
                 implicitWidth: time.width + 12

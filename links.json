@@ -3,5 +3,6 @@
   "helix": "~/.config/helix",
   "hypr": "~/.config/hypr",
   "opencode": "~/.config/opencode",
-  "quickshell": "~/.config/quickshell"
+  "quickshell": "~/.config/quickshell",
+  ".gitconfig": "~/.gitconfig"
 }

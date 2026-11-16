@@ -1,5 +1,6 @@
 {
   "alacritty": "~/.config/alacritty",
+  "gitui": "~/.config/gitui",
   "helix": "~/.config/helix",
   "hypr": "~/.config/hypr",
   "opencode": "~/.config/opencode",

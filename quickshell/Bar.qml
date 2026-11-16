@@ -23,14 +23,14 @@ PanelWindow {
 
         Component.onCompleted: {
             Qt.callLater(() => {
-                const visit = item => {
-                    for (let i = 0; i < item.children.length; i++) {
-                        const child = item.children[i];
-                        if (child.blurRegion) barBlurRegion.regions.push(child.blurRegion);
-                        visit(child);
-                    }
-                };
-                visit(contentItem);
+                    const visit = item => {
+                        for (let i = 0; i < item.children.length; i++) {
+                            const child = item.children[i];
+                            if (child.blurRegion) barBlurRegion.regions.push(child.blurRegion);
+                            visit(child);
+                        }
+                    };
+                    visit(contentItem);
             });
         }
     }

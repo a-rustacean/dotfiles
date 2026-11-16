@@ -1,0 +1,34 @@
+[general]
+import = [ "./theme.toml" ]
+
+live_config_reload = true
+
+[window]
+padding = {
+  x = 10,
+  y = 10,
+}
+
+dynamic_padding = true
+
+decorations = "None"
+
+[font]
+normal = {
+  family = "JetBrains Mono Nerd Font",
+  style = "Regular",
+}
+bold = {
+  family = "JetBrains Mono Nerd Font",
+  style = "Bold",
+}
+italic = {
+  family = "JetBrains Mono Nerd Font",
+  style = "Italic",
+}
+bold_italic = {
+  family = "JetBrains Mono Nerd Font",
+  style = "Bold Italic",
+}
+
+size = 14

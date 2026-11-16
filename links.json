@@ -1,0 +1,7 @@
+{
+  "alacritty": "~/.config/alacritty",
+  "helix": "~/.config/helix",
+  "hypr": "~/.config/hypr",
+  "opencode": "~/.config/opencode",
+  "quickshell": "~/.config/quickshell"
+}

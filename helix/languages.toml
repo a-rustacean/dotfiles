@@ -1,0 +1,7 @@
+[language-server.qml-language-server]
+command = "qml-language-server"
+
+[[language]]
+name = "qml"
+indent = { tab-width = 4, unit = "    " }
+language-servers = ["qml-language-server"]

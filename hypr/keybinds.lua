@@ -10,7 +10,7 @@ local directions   = { "left", "down", "up", "right" }
 
 local mainMod      = "SUPER"
 
-hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(config.programs.ghostty))
+hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(config.programs.alacritty))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + ALT + Q", hl.dsp.exec_cmd(config.programs.hyprshutdown))
 hl.bind(mainMod .. " + CTRL + Q", hl.dsp.exec_cmd(config.programs.hyprlock))

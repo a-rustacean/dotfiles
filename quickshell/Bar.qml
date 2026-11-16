@@ -47,7 +47,6 @@ PanelWindow {
                 implicitWidth: Config.bar.height - Config.bar.margin
 
                 Image {
-                    id: icon
                     anchors.centerIn: parent
                     source: "./nix.svg"
                     width: Config.bar.height

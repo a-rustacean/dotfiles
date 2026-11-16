@@ -49,6 +49,7 @@ const bar = {
   fontSize: 16,
   height: 35,
   margin: 6,
+  titleMaxWidth: 300,
   background: withAlpha(colors.base, ui.backgroundOpacity),
   disabledBackground: withAlpha(colors.surface0, ui.backgroundOpacity),
 };

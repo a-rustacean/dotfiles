@@ -94,6 +94,8 @@ PanelWindow {
                     onTriggered: activeWindowProc.running = true
                 }
             }
+
+            NowPlaying {}
         }
 
         RowLayout {

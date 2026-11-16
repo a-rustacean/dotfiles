@@ -62,35 +62,12 @@ PanelWindow {
                     width: Math.min(title.implicitWidth, Config.bar.titleMaxWidth)
                     elide: Text.ElideRight
                     anchors.centerIn: parent
-                    text: ToplevelManager.activeToplevel?.appId ?? "Desktop"
+                    text: ToplevelManager.activeToplevel
+                    ? DesktopEntries.heuristicLookup(ToplevelManager.activeToplevel.appId).name
+                    : "Desktop"
                     color: Config.colors.text
                     font.family: Config.bar.fontFamily
                     font.pixelSize: Config.bar.fontSize
-                }
-
-                Process {
-                    id: activeWindowProc
-
-                    command: ["hyprctl", "-j", "activewindow"]
-                    running: true
-
-                    stdout: StdioCollector {
-                        onStreamFinished: {
-                            try {
-                                const window = JSON.parse(this.text)
-                                title.text = window.initialTitle || "Desktop"
-                            } catch (e) {
-                                title.text = "Desktop"
-                            }
-                        }
-                    }
-                }
-
-                Timer {
-                    interval: 500
-                    running: true
-                    repeat: true
-                    onTriggered: activeWindowProc.running = true
                 }
             }
 

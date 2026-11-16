@@ -63,8 +63,11 @@ RowLayout {
     }
 
     function scheduleClose() {
-        if (activeMenu !== "")
-            closeTimer.restart();
+        if (activeMenu === "")
+            return;
+        if (activeMenu === "wifi" && menuLoader.item?.pendingNetwork)
+            return;
+        closeTimer.restart();
     }
 
     BarItem {
@@ -206,6 +209,8 @@ RowLayout {
                 || popupHover.hovered) {
                 return;
             }
+            if (root.activeMenu === "wifi" && menuLoader.item?.pendingNetwork)
+                return;
 
             root.activeMenu = "";
             root.anchorItem = null;
@@ -326,6 +331,7 @@ RowLayout {
         id: wifiMenu
         WifiMenu {
             active: true
+            onPasswordPromptClosed: root.scheduleClose()
         }
     }
 

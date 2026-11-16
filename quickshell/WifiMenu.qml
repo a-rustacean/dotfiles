@@ -1,12 +1,17 @@
+import Quickshell
 import Quickshell.Networking
+import Quickshell.Wayland
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import QtQuick.Layouts
 
 import "config.js" as Config
 
 Item {
     id: root
+
+    signal passwordPromptClosed()
 
     readonly property var wifiDevices: Networking.devices.values
         .filter(device => device.type === DeviceType.Wifi)
@@ -48,6 +53,7 @@ Item {
     property var pendingNetwork: null
     property string password: ""
     property string errorMessage: ""
+    readonly property var hostScreen: QsWindow.window?.screen
     implicitHeight: menuContent.implicitHeight
 
     function startScan() {
@@ -89,6 +95,13 @@ Item {
             || network.connected || network.stateChanging)
             return;
 
+        if (!network.known && supportsPsk(network)) {
+            errorMessage = "";
+            pendingNetwork = network;
+            password = "";
+            return;
+        }
+
         connectNetwork(network);
     }
 
@@ -101,6 +114,13 @@ Item {
         pendingNetwork.connectWithPsk(password);
         pendingNetwork = null;
         password = "";
+        root.passwordPromptClosed();
+    }
+
+    function cancelPassword() {
+        pendingNetwork = null;
+        password = "";
+        root.passwordPromptClosed();
     }
 
     function forgetNetwork(network) {
@@ -156,9 +176,122 @@ Item {
                 root.pendingNetwork = network;
                 root.password = "";
                 root.errorMessage = "";
-                Qt.callLater(() => passwordField.forceActiveFocus());
             } else {
                 root.errorMessage = "Connection failed: " + ConnectionFailReason.toString(reason);
+            }
+        }
+    }
+
+    PanelWindow {
+        id: passwordPrompt
+
+        visible: root.pendingNetwork !== null
+        screen: root.hostScreen
+        color: "transparent"
+        focusable: true
+
+        WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+        WlrLayershell.namespace: "quickshell-wifi-password"
+
+        exclusionMode: ExclusionMode.Ignore
+
+        BackgroundEffect.blurRegion: Region {
+            item: passwordCard
+            radius: Config.ui.rounding
+        }
+
+        anchors {
+            top: true
+            bottom: true
+            left: true
+            right: true
+        }
+
+        onVisibleChanged: {
+            if (visible)
+                Qt.callLater(() => passwordField.forceActiveFocus());
+        }
+
+        Rectangle {
+            anchors.fill: parent
+            color: "#66000000"
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: root.cancelPassword()
+        }
+
+        ThemedRectangle {
+            id: passwordCard
+
+            anchors.centerIn: parent
+            width: Config.quickSettings.menuWidth
+            height: 156
+            blurRegionEnabled: false
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: event => event.accepted = true
+            }
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: Config.quickSettings.menuPadding
+                spacing: Config.quickSettings.menuSpacing
+
+                Text {
+                    Layout.fillWidth: true
+                    text: "Connect to " + (root.pendingNetwork?.name || "Wi-Fi")
+                    color: Config.colors.text
+                    font.family: Config.ui.fontFamily
+                    font.pixelSize: Config.quickSettings.titleFontSize
+                    font.bold: true
+                    elide: Text.ElideRight
+                }
+
+                TextField {
+                    id: passwordField
+
+                    Layout.fillWidth: true
+                    placeholderText: "Wi-Fi password"
+                    echoMode: TextInput.Password
+                    text: root.password
+                    color: Config.colors.text
+                    placeholderTextColor: Config.colors.overlay1
+                    font.family: Config.ui.fontFamily
+                    font.pixelSize: Config.quickSettings.bodyFontSize
+                    selectByMouse: true
+
+                    background: ThemedRectangle {
+                        borderColor: passwordField.activeFocus
+                            ? Config.colors.text
+                            : Config.colors.surface1
+                        blurRegionEnabled: false
+                    }
+
+                    onTextChanged: root.password = text
+                    onAccepted: root.submitPassword()
+                    Keys.onEscapePressed: root.cancelPassword()
+                }
+
+                RowLayout {
+                    Layout.alignment: Qt.AlignRight
+
+                    MenuIconButton {
+                        glyph: "×"
+                        actionName: "Cancel Wi-Fi password entry"
+                        onClicked: root.cancelPassword()
+                    }
+
+                    MenuIconButton {
+                        glyph: "✓"
+                        actionName: "Connect to Wi-Fi network"
+                        enabled: root.password.length > 0
+                        onClicked: root.submitPassword()
+                    }
+                }
             }
         }
     }
@@ -204,54 +337,6 @@ Item {
                 }
             }
 
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-            visible: root.pendingNetwork !== null
-            spacing: 6
-
-            TextField {
-                id: passwordField
-                Layout.fillWidth: true
-                placeholderText: root.pendingNetwork
-                    ? "Password for " + root.pendingNetwork.name
-                    : "Wi-Fi password"
-                echoMode: TextInput.Password
-                text: root.password
-                color: Config.colors.text
-                placeholderTextColor: Config.colors.overlay1
-                font.family: Config.ui.fontFamily
-                font.pixelSize: Config.quickSettings.bodyFontSize
-                selectByMouse: true
-
-                background: ThemedRectangle {
-                    borderColor: passwordField.activeFocus
-                        ? Config.colors.text
-                        : Config.colors.surface1
-                    blurRegionEnabled: false
-                }
-
-                onTextChanged: root.password = text
-                onAccepted: root.submitPassword()
-            }
-
-            MenuIconButton {
-                glyph: "✓"
-                actionName: "Connect to Wi-Fi network"
-                marked: !root.password.length
-                enabled: root.password.length > 0
-                onClicked: root.submitPassword()
-            }
-
-            MenuIconButton {
-                glyph: "×"
-                actionName: "Cancel Wi-Fi password entry"
-                onClicked: {
-                    root.pendingNetwork = null;
-                    root.password = "";
-                }
-            }
         }
 
         Text {

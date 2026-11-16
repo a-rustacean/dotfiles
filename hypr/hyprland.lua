@@ -92,7 +92,7 @@ hl.config({
 -- Hyprland needs blur_popups enabled on the parent layer namespace.
 hl.layer_rule({
   name = "quickshell-background-blur",
-  match = { namespace = "^quickshell$" },
+  match = { namespace = "^(quickshell|quickshell-wifi-password)$" },
   blur = true,
   blur_popups = true,
   xray = false,

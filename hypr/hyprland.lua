@@ -88,6 +88,16 @@ hl.config({
   },
 })
 
+-- The quicksettings popup is an xdg_popup owned by the bar's layer surface.
+-- Hyprland needs blur_popups enabled on the parent layer namespace.
+hl.layer_rule({
+  name = "quickshell-background-blur",
+  match = { namespace = "^quickshell$" },
+  blur = true,
+  blur_popups = true,
+  xray = false,
+})
+
 hl.gesture({
   fingers = 3,
   direction = "horizontal",

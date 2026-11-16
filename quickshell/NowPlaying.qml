@@ -9,7 +9,7 @@ import "config.js" as Config
 BarItem {
     id: root
 
-    implicitWidth: Config.bar.nowPlayingWidth
+    implicitWidth: Math.min(Config.bar.nowPlayingWidth, marqueeRow.implicitWidth + 38)
     visible: player !== null
     active: hovered
 

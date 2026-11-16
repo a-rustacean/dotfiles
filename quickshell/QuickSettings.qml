@@ -13,6 +13,16 @@ RowLayout {
     property string activeMenu: ""
     property Item anchorItem: null
 
+    readonly property bool hasAudioInput: Pipewire.nodes.values.some(
+        node => node.audio !== null && !node.isStream && !node.isSink
+    )
+    readonly property bool hasAudioOutput: Pipewire.nodes.values.some(
+        node => node.audio !== null && !node.isStream && node.isSink
+    )
+    readonly property bool hasWifiDevice: Networking.devices.values.some(
+        device => device.type === DeviceType.Wifi
+    )
+
     readonly property bool inputMuted: {
         const audio = Pipewire.defaultAudioSource?.audio;
         return !audio || audio.muted;
@@ -60,6 +70,7 @@ RowLayout {
     BarItem {
         id: inputButton
         implicitWidth: Config.bar.height - Config.bar.margin
+        visible: root.hasAudioInput
         active: root.activeMenu === "audio-input"
         Accessible.role: Accessible.Button
         Accessible.name: "Audio input settings"
@@ -91,6 +102,7 @@ RowLayout {
     BarItem {
         id: outputButton
         implicitWidth: Config.bar.height - Config.bar.margin
+        visible: root.hasAudioOutput
         active: root.activeMenu === "audio-output"
         Accessible.role: Accessible.Button
         Accessible.name: "Audio output settings"
@@ -122,6 +134,7 @@ RowLayout {
     BarItem {
         id: bluetoothButton
         implicitWidth: Config.bar.height - Config.bar.margin
+        visible: Bluetooth.defaultAdapter !== null
         active: root.activeMenu === "bluetooth"
         Accessible.role: Accessible.Button
         Accessible.name: "Bluetooth settings"
@@ -154,6 +167,7 @@ RowLayout {
     BarItem {
         id: wifiButton
         implicitWidth: Config.bar.height - Config.bar.margin
+        visible: root.hasWifiDevice
         active: root.activeMenu === "wifi"
         Accessible.role: Accessible.Button
         Accessible.name: "Wi-Fi settings"

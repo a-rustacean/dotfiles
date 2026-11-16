@@ -16,10 +16,13 @@ BarItem {
     property bool hovered: false
 
     readonly property var player: {
-        const players = Mpris.players.values.filter(p => p.trackTitle.length > 0);
+        const players = Mpris.players.values.filter(p =>
+            p.trackTitle.length > 0
+            && (p.isPlaying || p.playbackState === MprisPlaybackState.Paused)
+        );
 
         return players.find(p => p.isPlaying)
-        ?? players.find(p => p.playbackState !== MprisPlaybackState.Stopped)
+        ?? players[0]
         ?? null;
     }
 

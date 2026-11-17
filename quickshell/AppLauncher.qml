@@ -204,7 +204,9 @@ Scope {
                         width: resultsList.width
                         height: Config.launcher.itemHeight
                         radius: Config.ui.rounding
-                        color: root.selectedIndex === delegateRoot.index ? Config.colors.surface1 : "transparent"
+                        color: root.selectedIndex === delegateRoot.index
+                            ? Config.ui.selectedBackground
+                            : "transparent"
 
                         RowLayout {
                             anchors.fill: parent
@@ -226,7 +228,9 @@ Scope {
                                 Text {
                                     anchors.centerIn: parent
                                     text: (delegateRoot.modelData.name || "?").charAt(0).toUpperCase()
-                                    color: Config.colors.text
+                                    color: root.selectedIndex === delegateRoot.index
+                                        ? Config.ui.selectedForeground
+                                        : Config.colors.text
                                     font.pixelSize: Config.launcher.iconFallbackFontSize
                                     font.family: root.font
                                     visible: (delegateRoot.modelData.icon ?? "") === ""
@@ -240,7 +244,9 @@ Scope {
 
                                 Text {
                                     text: delegateRoot.modelData.name ?? ""
-                                    color: root.selectedIndex === delegateRoot.index ? Config.colors.text : Config.colors.subtext0
+                                    color: root.selectedIndex === delegateRoot.index
+                                        ? Config.ui.selectedForeground
+                                        : Config.colors.subtext0
                                     font.pixelSize: Config.launcher.itemFontSize
                                     font.family: root.font
                                     font.bold: root.selectedIndex === delegateRoot.index
@@ -250,7 +256,9 @@ Scope {
 
                                 Text {
                                     text: delegateRoot.modelData.genericName ?? delegateRoot.modelData.comment ?? ""
-                                    color: Config.colors.overlay1
+                                    color: root.selectedIndex === delegateRoot.index
+                                        ? Config.ui.selectedSecondary
+                                        : Config.colors.overlay1
                                     font.pixelSize: Config.launcher.itemSubtitleFontSize
                                     font.family: root.font
                                     elide: Text.ElideRight

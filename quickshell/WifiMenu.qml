@@ -371,6 +371,7 @@ Item {
                 backgroundColor: isConnected
                     ? Config.ui.selectedBackground
                     : Config.bar.disabledBackground
+                borderSize: isConnected ? Config.ui.borderWidth : 0
                 borderColor: isConnected
                     ? Config.ui.selectedBackground
                     : Config.colors.surface1

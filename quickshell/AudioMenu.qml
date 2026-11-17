@@ -87,6 +87,7 @@ Item {
                 backgroundColor: isDefault
                     ? Config.ui.selectedBackground
                     : Config.bar.disabledBackground
+                borderSize: isDefault ? Config.ui.borderWidth : 0
                 borderColor: isDefault
                     ? Config.ui.selectedBackground
                     : Config.colors.surface1

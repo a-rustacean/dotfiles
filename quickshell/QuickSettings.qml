@@ -30,27 +30,31 @@ RowLayout {
         device => device.type === DeviceType.Wifi
     )
 
+    PwObjectTracker {
+        objects: [Pipewire.defaultAudioSource, Pipewire.defaultAudioSink]
+    }
+
     readonly property bool inputMuted: {
-        const audio = Pipewire.defaultAudioSource?.audio;
-        return !audio || audio.muted;
+        const node = Pipewire.defaultAudioSource;
+        return !node || !node.ready || node.audio === null || node.audio.muted;
     }
     readonly property bool outputMuted: {
-        const audio = Pipewire.defaultAudioSink?.audio;
-        return !audio || audio.muted;
+        const node = Pipewire.defaultAudioSink;
+        return !node || !node.ready || node.audio === null || node.audio.muted;
     }
 
     spacing: 4
 
     function toggleInputMute() {
-        const audio = Pipewire.defaultAudioSource?.audio;
-        if (audio)
-            audio.muted = !audio.muted;
+        const node = Pipewire.defaultAudioSource;
+        if (node && node.ready && node.audio !== null)
+            node.audio.muted = !node.audio.muted;
     }
 
     function toggleOutputMute() {
-        const audio = Pipewire.defaultAudioSink?.audio;
-        if (audio)
-            audio.muted = !audio.muted;
+        const node = Pipewire.defaultAudioSink;
+        if (node && node.ready && node.audio !== null)
+            node.audio.muted = !node.audio.muted;
     }
 
     function toggleBluetooth() {
@@ -220,6 +224,7 @@ RowLayout {
             anchors.centerIn: parent
             icon: "󰍬"
             marked: root.inputMuted
+            opacity: root.inputMuted ? 0.6 : 1
         }
 
         MouseArea {
@@ -252,6 +257,7 @@ RowLayout {
             anchors.centerIn: parent
             icon: "󰕾"
             marked: root.outputMuted
+            opacity: root.outputMuted ? 0.6 : 1
         }
 
         MouseArea {

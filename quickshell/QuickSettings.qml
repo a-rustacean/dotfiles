@@ -1,5 +1,6 @@
 import Quickshell
 import Quickshell.Bluetooth
+import Quickshell.Io
 import Quickshell.Networking
 import Quickshell.Services.Pipewire
 import QtQuick
@@ -12,7 +13,13 @@ RowLayout {
 
     property string activeMenu: ""
     property Item anchorItem: null
+    property var bluetoothConnectingDevice: null
+    property var bluetoothForgettingDevice: null
+    property string bluetoothConnectionError: ""
+    property bool bluetoothDiscoveryPending: false
+    property var bluetoothDiscoveryAdapter: null
 
+    readonly property var bluetoothAdapter: Bluetooth.defaultAdapter
     readonly property bool hasAudioInput: Pipewire.nodes.values.some(
         node => node.audio !== null && !node.isStream && !node.isSink
     )
@@ -47,13 +54,144 @@ RowLayout {
     }
 
     function toggleBluetooth() {
-        const adapter = Bluetooth.defaultAdapter;
+        const adapter = root.bluetoothAdapter;
         if (adapter)
             adapter.enabled = !adapter.enabled;
     }
 
+    function ensureBluetoothDiscovery() {
+        const adapter = root.bluetoothAdapter;
+        if (!adapter || !adapter.enabled || bluetoothConnectProcess.running) {
+            root.bluetoothDiscoveryPending = false;
+            root.bluetoothDiscoveryAdapter = null;
+            return;
+        }
+
+        if (adapter.discovering) {
+            root.bluetoothDiscoveryPending = false;
+            root.bluetoothDiscoveryAdapter = null;
+            return;
+        }
+
+        if (root.bluetoothDiscoveryPending && root.bluetoothDiscoveryAdapter === adapter)
+            return;
+
+        root.bluetoothDiscoveryPending = true;
+        root.bluetoothDiscoveryAdapter = adapter;
+        adapter.discovering = true;
+    }
+
+    function connectBluetoothDevice(device) {
+        if (!device || !root.bluetoothAdapter || !root.bluetoothAdapter.enabled
+            || bluetoothConnectProcess.running || root.bluetoothForgettingDevice)
+            return;
+
+        bluetoothConnectionError = "";
+        bluetoothConnectingDevice = device;
+        bluetoothConnectProcess.command = [
+            "bluetoothctl",
+            "--agent",
+            "NoInputNoOutput",
+            "connect",
+            device.address
+        ];
+        bluetoothConnectProcess.running = true;
+        if (root.bluetoothAdapter.discovering)
+            root.bluetoothAdapter.discovering = false;
+    }
+
+    function forgetBluetoothDevice(device) {
+        if (!device || root.bluetoothForgettingDevice)
+            return;
+
+        if (!device.connected) {
+            device.forget();
+            return;
+        }
+
+        root.bluetoothForgettingDevice = device;
+        device.disconnect();
+    }
+
     function toggleWifi() {
         Networking.wifiEnabled = !Networking.wifiEnabled;
+    }
+
+    Component.onCompleted: ensureBluetoothDiscovery()
+
+    Connections {
+        target: Bluetooth
+
+        function onDefaultAdapterChanged() {
+            root.ensureBluetoothDiscovery();
+        }
+    }
+
+    Connections {
+        target: root.bluetoothAdapter
+
+        function onEnabledChanged() {
+            root.ensureBluetoothDiscovery();
+        }
+
+        function onDiscoveringChanged() {
+            if (root.bluetoothAdapter?.discovering) {
+                root.bluetoothDiscoveryPending = false;
+                root.bluetoothDiscoveryAdapter = null;
+            } else if (root.bluetoothAdapter?.enabled && !bluetoothConnectProcess.running) {
+                Qt.callLater(() => root.ensureBluetoothDiscovery());
+            }
+        }
+    }
+
+    Connections {
+        target: root.bluetoothForgettingDevice
+
+        function onConnectedChanged() {
+            const device = root.bluetoothForgettingDevice;
+            if (device && !device.connected) {
+                root.bluetoothForgettingDevice = null;
+                device.forget();
+            }
+        }
+    }
+
+    Timer {
+        interval: 5000
+        repeat: true
+        running: root.bluetoothAdapter !== null
+            && root.bluetoothAdapter.enabled
+            && !root.bluetoothAdapter.discovering
+            && !bluetoothConnectProcess.running
+        onTriggered: {
+            root.bluetoothDiscoveryPending = false;
+            root.ensureBluetoothDiscovery();
+        }
+    }
+
+    Process {
+        id: bluetoothConnectProcess
+
+        stdout: StdioCollector {
+            id: bluetoothConnectStdout
+        }
+
+        stderr: StdioCollector {
+            id: bluetoothConnectStderr
+        }
+
+        onExited: (exitCode, exitStatus) => {
+            const output = (bluetoothConnectStdout.text + "\n" + bluetoothConnectStderr.text).trim();
+            const failure = output.split("\n").find(line => /failed|error/i.test(line));
+            if (exitCode !== 0 || failure) {
+                root.bluetoothConnectionError = failure
+                    || "Bluetooth connection failed; check that Bluetooth is enabled";
+            }
+
+            root.bluetoothConnectingDevice = null;
+            root.bluetoothDiscoveryPending = false;
+            Qt.callLater(() => root.ensureBluetoothDiscovery());
+        }
     }
 
     function showMenu(name, item) {
@@ -145,12 +283,13 @@ RowLayout {
         StatusIcon {
             anchors.centerIn: parent
             icon: "󰂯"
-            marked: !Bluetooth.defaultAdapter || !Bluetooth.defaultAdapter.enabled
+            marked: !root.bluetoothAdapter || !root.bluetoothAdapter.enabled
+            opacity: !root.bluetoothAdapter || !root.bluetoothAdapter.enabled ? 0.6 : 1
         }
 
         MouseArea {
             anchors.fill: parent
-            enabled: Bluetooth.defaultAdapter !== null
+            enabled: root.bluetoothAdapter !== null
             cursorShape: Qt.PointingHandCursor
             onClicked: root.toggleBluetooth()
         }
@@ -179,6 +318,7 @@ RowLayout {
             anchors.centerIn: parent
             icon: "󰖩"
             marked: !Networking.wifiEnabled
+            opacity: Networking.wifiEnabled ? 1 : 0.6
         }
 
         MouseArea {
@@ -323,7 +463,11 @@ RowLayout {
     Component {
         id: bluetoothMenu
         BluetoothMenu {
-            active: true
+            connectingDevice: root.bluetoothConnectingDevice
+            forgettingDevice: root.bluetoothForgettingDevice
+            connectionError: root.bluetoothConnectionError
+            onConnectRequested: device => root.connectBluetoothDevice(device)
+            onForgetRequested: device => root.forgetBluetoothDevice(device)
         }
     }
 

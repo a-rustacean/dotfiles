@@ -1,5 +1,4 @@
 import Quickshell.Bluetooth
-import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 
@@ -31,34 +30,14 @@ Item {
 
         return entries;
     }
-    property bool active: false
-    property bool ownsScan: false
-    property bool scanStartPending: false
-    property bool scanWasDiscovering: false
-    property var scanAdapter: null
-    property var pairingDevice: null
-    property var connectAfterPairDevice: null
-    property string pairingError: ""
+    property var connectingDevice: null
+    property var forgettingDevice: null
+    property string connectionError: ""
+
+    signal connectRequested(var device)
+    signal forgetRequested(var device)
+
     implicitHeight: menuContent.implicitHeight
-
-    function pairAndConnect(device) {
-        if (pairingProcess.running || !device)
-        return;
-
-        pairingError = "";
-        pairingDevice = device;
-        connectAfterPairDevice = device;
-        pairingProcess.command = [
-        "bluetoothctl",
-        "--timeout",
-        "30",
-        "--agent",
-        "NoInputNoOutput",
-        "pair",
-        device.address
-        ];
-        pairingProcess.running = true;
-    }
 
     function deviceGlyph(device) {
         const icon = device
@@ -83,83 +62,10 @@ Item {
 
     function activateDevice(device) {
         if (!device || !adapter || !adapter.enabled
-            || device.connected || device.pairing || pairingProcess.running
-            || (pairingDevice && pairingDevice !== device))
+            || device.connected || device.pairing || root.connectingDevice || root.forgettingDevice)
             return;
 
-        if (device.paired)
-            device.connect();
-        else
-            pairAndConnect(device);
-    }
-
-    function startScan() {
-        if (!adapter || !adapter.enabled)
-            return;
-
-        if (adapter.discovering) {
-            scanStartPending = false;
-            scanWasDiscovering = true;
-            return;
-        }
-
-        // BlueZ reports the discovery state asynchronously; don't issue a
-        // second StartDiscovery while the first request is still pending.
-        if (scanStartPending && scanAdapter === adapter)
-            return;
-
-        scanStartPending = true;
-        ownsScan = true;
-        scanAdapter = adapter;
-        adapter.discovering = true;
-    }
-
-    function stopScan() {
-        if (ownsScan && scanAdapter && scanAdapter.discovering)
-            scanAdapter.discovering = false;
-        ownsScan = false;
-        scanAdapter = null;
-        scanStartPending = false;
-        scanWasDiscovering = false;
-    }
-
-    Component.onCompleted: {
-        if (active)
-        startScan();
-    }
-    Component.onDestruction: stopScan()
-    onAdapterChanged: {
-        stopScan();
-        if (active)
-        startScan();
-    }
-    onActiveChanged: {
-        if (active)
-        startScan();
-        else
-        stopScan();
-    }
-
-    Connections {
-        target: root.adapter
-
-        function onEnabledChanged() {
-            if (root.active && root.adapter.enabled)
-            root.startScan();
-            else
-            root.stopScan();
-        }
-
-        function onDiscoveringChanged() {
-            if (root.adapter.discovering) {
-                root.scanStartPending = false;
-                root.scanWasDiscovering = true;
-            } else if (root.scanWasDiscovering) {
-                root.scanWasDiscovering = false;
-                if (root.active && root.adapter.enabled)
-                    Qt.callLater(() => root.startScan());
-            }
-        }
+        root.connectRequested(device);
     }
 
     ColumnLayout {
@@ -184,6 +90,16 @@ Item {
                 }
             }
 
+        }
+
+        Text {
+            Layout.fillWidth: true
+            text: root.connectionError
+            color: Config.colors.red
+            font.family: Config.ui.fontFamily
+            font.pixelSize: Config.quickSettings.smallFontSize
+            elide: Text.ElideRight
+            visible: text !== ""
         }
 
         ListView {
@@ -225,6 +141,7 @@ Item {
                     backgroundColor: deviceRow.isConnected
                     ? Config.ui.selectedBackground
                     : Config.bar.disabledBackground
+                    borderSize: deviceRow.isConnected ? Config.ui.borderWidth : 0
                     borderColor: deviceRow.isConnected
                     ? Config.ui.selectedBackground
                     : Config.colors.surface1
@@ -238,8 +155,8 @@ Item {
                             && deviceRow.device !== null
                             && !deviceRow.isConnected
                             && !deviceRow.device.pairing
-                            && !pairingProcess.running
-                            && (!root.pairingDevice || root.pairingDevice === deviceRow.device)
+                            && !root.connectingDevice
+                            && !root.forgettingDevice
                         cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                         onClicked: root.activateDevice(deviceRow.device)
                     }
@@ -281,14 +198,18 @@ Item {
                                 text: {
                                     if (!deviceRow.device)
                                     return "";
-                                    if (root.pairingDevice === deviceRow.device)
-                                    return "Pairing…";
-                                    if (deviceRow.device.pairing)
-                                    return "Pairing…";
+                                    if (root.forgettingDevice === deviceRow.device)
+                                    return deviceRow.device.connected
+                                        ? "Disconnecting before forgetting…"
+                                        : "Forgetting…";
                                     if (deviceRow.device.connected)
                                     return deviceRow.device.batteryAvailable
                                     ? "Connected · " + Math.round(deviceRow.device.battery * 100) + "%"
                                     : "Connected";
+                                    if (deviceRow.device.pairing)
+                                    return "Pairing…";
+                                    if (root.connectingDevice === deviceRow.device)
+                                    return "Connecting…";
                                     return deviceRow.device.paired ? "Paired" : "Nearby";
                                 }
                                 color: deviceRow.isConnected
@@ -318,24 +239,12 @@ Item {
                                 : "Forget Bluetooth device"
                             onSelectedSurface: deviceRow.isConnected
                             visible: deviceRow.device !== null && deviceRow.device.paired
-                            enabled: visible
-                            onClicked: deviceRow.device.forget()
+                            enabled: visible && !root.forgettingDevice
+                            onClicked: root.forgetRequested(deviceRow.device)
                         }
                     }
                 }
 
-                Connections {
-                    target: deviceRow.device
-
-                    function onPairedChanged() {
-                        if (root.connectAfterPairDevice === deviceRow.device && deviceRow.device.paired) {
-                            const pairedDevice = root.connectAfterPairDevice;
-                            root.connectAfterPairDevice = null;
-                            if (!pairedDevice.connected)
-                            pairedDevice.connect();
-                        }
-                    }
-                }
             }
 
             Text {
@@ -344,7 +253,9 @@ Item {
                 text: !root.adapter
                 ? "No Bluetooth adapter found"
                 : root.adapter.enabled
-                ? "No devices found yet"
+                ? root.adapter.discovering
+                    ? "Scanning for devices…"
+                    : "Waiting for Bluetooth discovery…"
                 : "Turn Bluetooth on to see devices"
                 color: Config.colors.overlay1
                 font.family: Config.ui.fontFamily
@@ -352,36 +263,6 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
                 visible: root.deviceEntries.length === 0
             }
-        }
-    }
-
-    Process {
-        id: pairingProcess
-
-        stdout: StdioCollector {
-            id: pairingStdout
-        }
-
-        stderr: StdioCollector {
-            id: pairingStderr
-        }
-
-        onExited: (exitCode, exitStatus) => {
-            if (exitCode !== 0 && root.pairingDevice) {
-                const output = (pairingStdout.text + "\n" + pairingStderr.text).trim();
-                root.pairingError = output !== ""
-                ? "Pairing failed: " + output.split("\n").pop()
-                : "Pairing failed; check that Bluetooth is enabled";
-                if (root.connectAfterPairDevice === root.pairingDevice)
-                root.connectAfterPairDevice = null;
-            } else if (root.connectAfterPairDevice && root.connectAfterPairDevice.paired) {
-                const pairedDevice = root.connectAfterPairDevice;
-                root.connectAfterPairDevice = null;
-                if (!pairedDevice.connected)
-                pairedDevice.connect();
-            }
-
-            root.pairingDevice = null;
         }
     }
 }

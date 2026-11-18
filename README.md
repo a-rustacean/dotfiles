@@ -6,7 +6,7 @@ opencode. The repository is the source of truth: `links.json` and `link.py`
 symlink each tracked directory or file into the locations where the programs
 expect them, so editing a file here edits the live configuration.
 
-<!-- screenshot -->
+![Screenshot](./screenshot.png)
 
 ## Dependencies
 

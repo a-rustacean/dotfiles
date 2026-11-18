@@ -53,6 +53,18 @@ Existing destinations are skipped by default. Pass `--backup` to rename an
 existing destination to `<name>.bak` before linking, and `--force` to replace
 existing files or symlinks. Directories are never deleted.
 
+## Git identity
+
+The tracked `.gitconfig` contains shared defaults and includes
+`~/.gitconfig.local` for personal information. Copy `gitconfig.local.example`
+to `~/.gitconfig.local` and adjust your name, email, and signing key:
+
+```sh
+cp gitconfig.local.example ~/.gitconfig.local
+```
+
+The local file is intentionally untracked and is not managed by `link.py`.
+
 ## Layout
 
 `links.json` maps each path in this repository to its destination on the

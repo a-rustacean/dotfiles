@@ -1,0 +1,5 @@
+# Copy this file to ~/.gitconfig.local and adjust the values.
+[user]
+	email = "a-rustacean@outlook.com"
+	name = "Dilshad"
+	signingKey = "95BBBA7922AE1CEC"

@@ -21,13 +21,10 @@ PanelWindow {
     color: "transparent"
 
     implicitHeight: Config.bar.height
-    property date currentDateTime: new Date()
 
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        onTriggered: root.currentDateTime = new Date()
+    SystemClock {
+        id: clock
+        precision: SystemClock.Minutes
     }
 
     BackgroundEffect.blurRegion: Region {
@@ -144,7 +141,7 @@ PanelWindow {
                     font.pixelSize: Config.bar.fontSize
 
                     anchors.centerIn: parent
-                    text: Qt.formatDateTime(root.currentDateTime, "hh:mm AP")
+                    text: Qt.formatDateTime(clock.date, "hh:mm AP")
                 }
             }
 
@@ -158,7 +155,7 @@ PanelWindow {
                     font.pixelSize: Config.bar.fontSize
 
                     anchors.centerIn: parent
-                    text: Qt.formatDateTime(root.currentDateTime, "MMM dd, yyyy")
+                    text: Qt.formatDateTime(clock.date, "MMM dd, yyyy")
                 }
             }
         }

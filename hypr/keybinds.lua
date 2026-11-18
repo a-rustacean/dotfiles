@@ -2,7 +2,7 @@
 ---- KEYBINDINGS ----
 ---------------------
 
-local config = require("config");
+local config = require("programs");
 
 local enableArrows = true
 local movementKeys = { "H", "J", "K", "L" };

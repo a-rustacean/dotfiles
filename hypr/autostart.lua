@@ -2,7 +2,7 @@
 ---- AUTOSTART ----
 -------------------
 
-local config = require("config")
+local config = require("programs")
 
 hl.on("hyprland.start", function()
   hl.exec_cmd(config.programs.hyprpaper)

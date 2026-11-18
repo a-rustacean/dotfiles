@@ -150,5 +150,5 @@ hl.window_rule({
     class = "vesktop|com.mitchellh.ghostty|zen-beta|Alacritty",
   },
 
-  opacity = "0.9",
+  opacity = "0.8",
 })

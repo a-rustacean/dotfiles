@@ -51,7 +51,6 @@ insert = "󰚄 INS"
 select = "󰚄 SEL"
 
 [editor.lsp]
-enable = true
 display-messages = true
 display-progress-messages = true
 display-inlay-hints = true
@@ -62,7 +61,6 @@ normal = "block"
 select = "block"
 
 [editor.file-picker]
-hidden = true
 max-depth = 10
 
 [editor.whitespace.render]

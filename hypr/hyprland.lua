@@ -44,18 +44,18 @@ hl.config({
     },
 
     blur = {
-      enabled = true;
-      size = 14;
-      passes = 3;
-      ignore_opacity = true;
-      new_optimizations = true;
-      noise = 0.01;
-      contrast = 0.8;
-      brightness = 0.7;
-      vibrancy = 0.4;
-      vibrancy_darkness = 0.0;
-      popups = true;
-      xray = true;
+      enabled = true,
+      size = 14,
+      passes = 3,
+      ignore_opacity = true,
+      new_optimizations = true,
+      noise = 0.01,
+      contrast = 0.8,
+      brightness = 0.7,
+      vibrancy = 0.4,
+      vibrancy_darkness = 0.0,
+      popups = true,
+      xray = true,
     }
   },
 

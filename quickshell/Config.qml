@@ -69,20 +69,11 @@ Singleton {
         return Qt.rgba(hex.r, hex.g, hex.b, alpha);
     }
 
-    function statePalette(state: string, theme: string, hovered: bool,
-        pressed: bool, defaultBackground: var): var {
-        const visualState = state === states.active
-            || state === states.dimmed
-            || state === states.disabled
-            ? state
-            : states.defaultState;
+    function statePalette(state: string, theme: string, hovered: bool, pressed: bool, defaultBackground: var): var {
+        const visualState = state === states.active || state === states.dimmed || state === states.disabled ? state : states.defaultState;
         const environmentTheme = theme === themes.light ? themes.light : themes.dark;
         const lightEnvironment = environmentTheme === themes.light;
-        const restingBackground = defaultBackground ?? (
-            lightEnvironment
-                ? colors.subtext1
-                : withAlpha(colors.base, ui.backgroundOpacity)
-        );
+        const restingBackground = defaultBackground ?? (lightEnvironment ? colors.subtext1 : withAlpha(colors.base, ui.backgroundOpacity));
 
         if (lightEnvironment) {
             if (visualState === states.disabled || visualState === states.dimmed) {
@@ -92,36 +83,28 @@ Singleton {
                     secondary: colors.surface0,
                     tertiary: colors.surface1,
                     disabledMark: visualState === states.disabled,
-                    theme: themes.light,
+                    theme: themes.light
                 };
             }
 
             if (visualState === states.active) {
                 return {
-                    background: pressed
-                        ? colors.subtext0
-                        : hovered
-                            ? colors.subtext1
-                            : ui.activeBackground,
+                    background: pressed ? colors.subtext0 : hovered ? colors.subtext1 : ui.activeBackground,
                     foreground: colors.base,
                     secondary: colors.surface0,
                     tertiary: colors.surface1,
                     disabledMark: false,
-                    theme: themes.light,
+                    theme: themes.light
                 };
             }
 
             return {
-                background: pressed
-                    ? colors.subtext0
-                    : hovered
-                        ? colors.text
-                        : restingBackground,
+                background: pressed ? colors.subtext0 : hovered ? colors.text : restingBackground,
                 foreground: colors.base,
                 secondary: colors.surface0,
                 tertiary: colors.surface1,
                 disabledMark: false,
-                theme: themes.light,
+                theme: themes.light
             };
         }
 
@@ -132,7 +115,7 @@ Singleton {
                 secondary: colors.overlay1,
                 tertiary: colors.overlay0,
                 disabledMark: visualState === states.disabled,
-                theme: themes.dark,
+                theme: themes.dark
             };
         }
 
@@ -144,7 +127,7 @@ Singleton {
                     secondary: colors.subtext1,
                     tertiary: colors.subtext0,
                     disabledMark: false,
-                    theme: themes.dark,
+                    theme: themes.dark
                 };
             }
             if (hovered) {
@@ -154,7 +137,7 @@ Singleton {
                     secondary: colors.subtext1,
                     tertiary: colors.subtext0,
                     disabledMark: false,
-                    theme: themes.dark,
+                    theme: themes.dark
                 };
             }
             return {
@@ -163,21 +146,17 @@ Singleton {
                 secondary: ui.activeSecondary,
                 tertiary: colors.overlay1,
                 disabledMark: false,
-                theme: themes.light,
+                theme: themes.light
             };
         }
 
         return {
-            background: pressed
-                ? colors.surface1
-                : hovered
-                    ? colors.surface0
-                    : restingBackground,
+            background: pressed ? colors.surface1 : hovered ? colors.surface0 : restingBackground,
             foreground: colors.text,
             secondary: colors.subtext0,
             tertiary: colors.overlay1,
             disabledMark: false,
-            theme: themes.dark,
+            theme: themes.dark
         };
     }
 
@@ -193,17 +172,13 @@ Singleton {
         readonly property int nowPlayingScrollSpeed: 40
         readonly property int nowPlayingScrollGap: 20
         readonly property int nowPlayingMarkerSize: 4
-        readonly property color background: root.withAlpha(
-            root.colors.base, root.ui.backgroundOpacity
-        )
+        readonly property color background: root.withAlpha(root.colors.base, root.ui.backgroundOpacity)
     }
 
     readonly property QtObject launcher: QtObject {
         readonly property string fontFamily: root.ui.fontFamily
 
-        readonly property color background: root.withAlpha(
-            root.colors.base, root.ui.backgroundOpacity
-        )
+        readonly property color background: root.withAlpha(root.colors.base, root.ui.backgroundOpacity)
 
         readonly property int width: 580
         readonly property int height: 480

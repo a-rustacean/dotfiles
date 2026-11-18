@@ -32,15 +32,15 @@ PanelWindow {
 
         Component.onCompleted: {
             Qt.callLater(() => {
-                    const visit = item => {
-                        for (let i = 0; i < item.children.length; i++) {
-                            const child = item.children[i];
-                            if (child.blurRegion && child.blurRegionEnabled !== false)
-                                barBlurRegion.regions.push(child.blurRegion);
-                            visit(child);
-                        }
-                    };
-                    visit(contentItem);
+                const visit = item => {
+                    for (let i = 0; i < item.children.length; i++) {
+                        const child = item.children[i];
+                        if (child.blurRegion && child.blurRegionEnabled !== false)
+                            barBlurRegion.regions.push(child.blurRegion);
+                        visit(child);
+                    }
+                };
+                visit(contentItem);
             });
         }
     }
@@ -77,9 +77,7 @@ PanelWindow {
                         if (!active)
                             return "Desktop";
 
-                        return DesktopEntries.heuristicLookup(active.appId)?.name
-                            || active.appId
-                            || "Unknown application";
+                        return DesktopEntries.heuristicLookup(active.appId)?.name || active.appId || "Unknown application";
                     }
                     color: Config.colors.text
                     font.family: Config.bar.fontFamily
@@ -103,9 +101,7 @@ PanelWindow {
                     property var workspace: Hyprland.workspaces.values.find(w => w.id == index + 1)
                     property bool isActive: Hyprland.focusedWorkspace?.id === (index + 1)
 
-                    visualState: isActive
-                        ? Config.states.active
-                        : workspace ? Config.states.defaultState : Config.states.dimmed
+                    visualState: isActive ? Config.states.active : workspace ? Config.states.defaultState : Config.states.dimmed
 
                     Text {
                         anchors.centerIn: parent

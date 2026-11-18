@@ -12,12 +12,7 @@ Slider {
     property bool pointerHovered: false
     property bool surfaceHovered: false
     readonly property bool stateHovered: root.pointerHovered || root.surfaceHovered
-    readonly property var palette: Config.statePalette(
-        root.visualState,
-        root.theme,
-        root.stateHovered,
-        root.pressed
-    )
+    readonly property var palette: Config.statePalette(root.visualState, root.theme, root.stateHovered, root.pressed)
 
     from: 0
     to: 1
@@ -41,25 +36,13 @@ Slider {
         width: root.availableWidth
         height: 4
         radius: height / 2
-        color: root.theme === Config.themes.light
-            ? Config.colors.subtext0
-            : root.visualState === Config.states.active
-                ? root.stateHovered ? Config.colors.surface1 : Config.colors.overlay1
-                : Config.colors.surface1
+        color: root.theme === Config.themes.light ? Config.colors.subtext0 : root.visualState === Config.states.active ? root.stateHovered ? Config.colors.surface1 : Config.colors.overlay1 : Config.colors.surface1
 
         Rectangle {
             width: parent.width * root.visualPosition
             height: parent.height
             radius: parent.radius
-            color: root.visualState === Config.states.disabled
-                ? root.theme === Config.themes.light
-                    ? Config.colors.surface0
-                    : Config.colors.subtext0
-                : root.theme === Config.themes.light
-                    ? Config.colors.base
-                    : root.visualState === Config.states.active
-                        ? root.stateHovered ? Config.colors.text : Config.ui.activeForeground
-                        : Config.colors.text
+            color: root.visualState === Config.states.disabled ? root.theme === Config.themes.light ? Config.colors.surface0 : Config.colors.subtext0 : root.theme === Config.themes.light ? Config.colors.base : root.visualState === Config.states.active ? root.stateHovered ? Config.colors.text : Config.ui.activeForeground : Config.colors.text
         }
     }
 
@@ -69,20 +52,8 @@ Slider {
         width: 12
         height: 12
         radius: width / 2
-        color: root.visualState === Config.states.disabled
-            ? root.theme === Config.themes.light
-                ? Config.colors.surface0
-                : Config.colors.subtext0
-            : root.theme === Config.themes.light
-                ? Config.colors.base
-                : root.visualState === Config.states.active
-                    ? root.stateHovered ? Config.colors.text : Config.ui.activeForeground
-                    : Config.colors.text
+        color: root.visualState === Config.states.disabled ? root.theme === Config.themes.light ? Config.colors.surface0 : Config.colors.subtext0 : root.theme === Config.themes.light ? Config.colors.base : root.visualState === Config.states.active ? root.stateHovered ? Config.colors.text : Config.ui.activeForeground : Config.colors.text
         border.width: Config.ui.borderWidth
-        border.color: root.visualState === Config.states.disabled
-            ? root.theme === Config.themes.light
-                ? Config.colors.surface1
-                : Config.colors.subtext0
-            : Config.colors.surface1
+        border.color: root.visualState === Config.states.disabled ? root.theme === Config.themes.light ? Config.colors.surface1 : Config.colors.subtext0 : Config.colors.surface1
     }
 }

@@ -11,12 +11,7 @@ Item {
     property bool hovered: false
     property bool marked: false
 
-    readonly property var palette: Config.statePalette(
-        root.visualState,
-        root.theme,
-        root.hovered,
-        false
-    )
+    readonly property var palette: Config.statePalette(root.visualState, root.theme, root.hovered, false)
     readonly property int filledBars: Math.ceil(Math.max(0, Math.min(1, strength)) * 4)
     readonly property bool showDisabledMark: root.marked || root.palette.disabledMark
 
@@ -42,9 +37,7 @@ Item {
                     anchors.bottom: parent.bottom
                     width: parent.width
                     height: 5 + index * 3
-                    color: index < root.filledBars
-                        ? root.palette.foreground
-                        : root.palette.secondary
+                    color: index < root.filledBars ? root.palette.foreground : root.palette.secondary
                 }
             }
         }

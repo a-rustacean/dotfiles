@@ -20,24 +20,13 @@ Rectangle {
     property bool borderless: false
     property bool blurRegionEnabled: true
 
-    readonly property var palette: Config.statePalette(
-        root.visualState,
-        root.theme,
-        root.hovered,
-        root.pressed,
-        root.defaultBackgroundColor
-    )
+    readonly property var palette: Config.statePalette(root.visualState, root.theme, root.hovered, root.pressed, root.defaultBackgroundColor)
     readonly property color resolvedBackgroundColor: root.palette.background
     readonly property color resolvedForegroundColor: root.palette.foreground
     readonly property color resolvedSecondaryColor: root.palette.secondary
     readonly property color resolvedTertiaryColor: root.palette.tertiary
     readonly property string resolvedTheme: root.palette.theme
-    readonly property color resolvedBorderColor: root.visualState === Config.states.active
-            && !root.hovered && !root.pressed
-        ? Config.ui.activeBackground
-        : root.highlighted || root.hovered || root.pressed
-            ? root.highlightBorderColor
-            : root.borderColor
+    readonly property color resolvedBorderColor: root.visualState === Config.states.active && !root.hovered && !root.pressed ? Config.ui.activeBackground : root.highlighted || root.hovered || root.pressed ? root.highlightBorderColor : root.borderColor
 
     HoverHandler {
         enabled: root.trackHover

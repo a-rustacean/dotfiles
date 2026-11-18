@@ -22,7 +22,7 @@ PanelWindow {
     property bool dismissOnBackdropClick: true
     property color backdropColor: "#66000000"
 
-    signal dismissed()
+    signal dismissed
 
     screen: root.targetScreen
     color: "transparent"

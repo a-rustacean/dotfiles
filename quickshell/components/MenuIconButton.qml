@@ -13,15 +13,8 @@ Button {
     property string visualState: Config.states.defaultState
     property string theme: Config.themes.dark
 
-    readonly property string effectiveVisualState: !root.enabled || root.marked
-        ? Config.states.disabled
-        : root.visualState
-    readonly property var palette: Config.statePalette(
-        root.effectiveVisualState,
-        root.theme,
-        root.hovered,
-        root.down
-    )
+    readonly property string effectiveVisualState: !root.enabled || root.marked ? Config.states.disabled : root.visualState
+    readonly property var palette: Config.statePalette(root.effectiveVisualState, root.theme, root.hovered, root.down)
 
     implicitWidth: Config.quickSettings.buttonHeight
     implicitHeight: Config.quickSettings.buttonHeight

@@ -11,22 +11,28 @@ Item {
     readonly property var adapter: Bluetooth.defaultAdapter
     readonly property var devices: adapter ? adapter.devices.values : []
     readonly property var deviceEntries: {
-        const paired = devices.filter(device => device.paired)
-        .sort((a, b) => a.name.localeCompare(b.name));
-        const nearby = devices.filter(device => !device.paired)
-        .sort((a, b) => a.name.localeCompare(b.name));
+        const paired = devices.filter(device => device.paired).sort((a, b) => a.name.localeCompare(b.name));
+        const nearby = devices.filter(device => !device.paired).sort((a, b) => a.name.localeCompare(b.name));
         const entries = [];
 
         if (paired.length > 0) {
-            entries.push({ section: "Paired devices" });
+            entries.push({
+                section: "Paired devices"
+            });
             for (const device of paired)
-            entries.push({ device });
+                entries.push({
+                    device
+                });
         }
 
         if (nearby.length > 0) {
-            entries.push({ section: "Nearby devices" });
+            entries.push({
+                section: "Nearby devices"
+            });
             for (const device of nearby)
-            entries.push({ device });
+                entries.push({
+                    device
+                });
         }
 
         return entries;
@@ -41,9 +47,7 @@ Item {
     implicitHeight: menuContent.implicitHeight
 
     function deviceGlyph(device) {
-        const icon = device
-            ? ((device.icon || "") + " " + (device.name || "")).toLowerCase()
-            : "";
+        const icon = device ? ((device.icon || "") + " " + (device.name || "")).toLowerCase() : "";
         if (icon.includes("phone") || icon.includes("mobile"))
             return "󰄜";
         if (icon.includes("headphone"))
@@ -62,8 +66,7 @@ Item {
     }
 
     function activateDevice(device) {
-        if (!device || !adapter || !adapter.enabled
-            || device.connected || device.pairing || root.connectingDevice || root.forgettingDevice)
+        if (!device || !adapter || !adapter.enabled || device.connected || device.pairing || root.connectingDevice || root.forgettingDevice)
             return;
 
         root.connectRequested(device);
@@ -112,9 +115,7 @@ Item {
                 readonly property bool isConnected: device !== null && device.connected
 
                 width: deviceList.width
-                height: modelData.section
-                    ? Config.quickSettings.smallFontSize + 4
-                    : Config.quickSettings.rowHeight
+                height: modelData.section ? Config.quickSettings.smallFontSize + 4 : Config.quickSettings.rowHeight
 
                 Text {
                     anchors.left: parent.left
@@ -139,13 +140,7 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         z: -1
-                        enabled: root.adapter !== null
-                            && root.adapter.enabled
-                            && deviceRow.device !== null
-                            && !deviceRow.isConnected
-                            && !deviceRow.device.pairing
-                            && !root.connectingDevice
-                            && !root.forgettingDevice
+                        enabled: root.adapter !== null && root.adapter.enabled && deviceRow.device !== null && !deviceRow.isConnected && !deviceRow.device.pairing && !root.connectingDevice && !root.forgettingDevice
                         cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                         onClicked: root.activateDevice(deviceRow.device)
                     }
@@ -171,9 +166,7 @@ Item {
 
                             Text {
                                 Layout.fillWidth: true
-                                text: deviceRow.device
-                                ? (deviceRow.device.name || deviceRow.device.deviceName || "Unknown device")
-                                : ""
+                                text: deviceRow.device ? (deviceRow.device.name || deviceRow.device.deviceName || "Unknown device") : ""
                                 color: deviceSurface.resolvedForegroundColor
                                 font.family: Config.ui.fontFamily
                                 font.pixelSize: Config.quickSettings.bodyFontSize
@@ -184,19 +177,15 @@ Item {
                                 Layout.fillWidth: true
                                 text: {
                                     if (!deviceRow.device)
-                                    return "";
+                                        return "";
                                     if (root.forgettingDevice === deviceRow.device)
-                                    return deviceRow.device.connected
-                                        ? "Disconnecting before forgetting…"
-                                        : "Forgetting…";
+                                        return deviceRow.device.connected ? "Disconnecting before forgetting…" : "Forgetting…";
                                     if (deviceRow.device.connected)
-                                    return deviceRow.device.batteryAvailable
-                                    ? "Connected · " + Math.round(deviceRow.device.battery * 100) + "%"
-                                    : "Connected";
+                                        return deviceRow.device.batteryAvailable ? "Connected · " + Math.round(deviceRow.device.battery * 100) + "%" : "Connected";
                                     if (deviceRow.device.pairing)
-                                    return "Pairing…";
+                                        return "Pairing…";
                                     if (root.connectingDevice === deviceRow.device)
-                                    return "Connecting…";
+                                        return "Connecting…";
                                     return deviceRow.device.paired ? "Paired" : "Nearby";
                                 }
                                 color: deviceSurface.resolvedSecondaryColor
@@ -208,9 +197,7 @@ Item {
 
                         MenuIconButton {
                             glyph: "󰌸"
-                            actionName: deviceRow.device
-                                ? "Disconnect " + deviceRow.device.name
-                                : "Disconnect Bluetooth device"
+                            actionName: deviceRow.device ? "Disconnect " + deviceRow.device.name : "Disconnect Bluetooth device"
                             theme: deviceSurface.resolvedTheme
                             visible: deviceRow.isConnected
                             enabled: root.adapter !== null && root.adapter.enabled
@@ -219,9 +206,7 @@ Item {
 
                         MenuIconButton {
                             glyph: "󰆴"
-                            actionName: deviceRow.device
-                                ? "Forget " + deviceRow.device.name
-                                : "Forget Bluetooth device"
+                            actionName: deviceRow.device ? "Forget " + deviceRow.device.name : "Forget Bluetooth device"
                             theme: deviceSurface.resolvedTheme
                             visible: deviceRow.device !== null && deviceRow.device.paired
                             enabled: visible && !root.forgettingDevice
@@ -229,19 +214,12 @@ Item {
                         }
                     }
                 }
-
             }
 
             Text {
                 anchors.centerIn: parent
                 width: parent.width - 16
-                text: !root.adapter
-                ? "No Bluetooth adapter found"
-                : root.adapter.enabled
-                ? root.adapter.discovering
-                    ? "Scanning for devices…"
-                    : "Waiting for Bluetooth discovery…"
-                : "Turn Bluetooth on to see devices"
+                text: !root.adapter ? "No Bluetooth adapter found" : root.adapter.enabled ? root.adapter.discovering ? "Scanning for devices…" : "Waiting for Bluetooth discovery…" : "Turn Bluetooth on to see devices"
                 color: Config.colors.overlay1
                 font.family: Config.ui.fontFamily
                 font.pixelSize: Config.quickSettings.bodyFontSize

@@ -13,9 +13,7 @@ BarItem {
     property bool toggleEnabled: true
 
     implicitWidth: Config.bar.height - Config.bar.margin
-    highlighted: root.menuController
-        ? root.menuController.activeMenu === root.menuName
-        : false
+    highlighted: root.menuController ? root.menuController.activeMenu === root.menuName : false
     Accessible.role: Accessible.Button
     Accessible.name: root.accessibleName
 

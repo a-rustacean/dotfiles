@@ -12,8 +12,8 @@ Prompt {
     property string password: ""
 
     signal passwordEdited(string value)
-    signal submitRequested()
-    signal cancelRequested()
+    signal submitRequested
+    signal cancelRequested
 
     layerNamespace: "quickshell-wifi-password"
     cardWidth: Config.quickSettings.menuWidth

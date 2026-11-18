@@ -14,12 +14,7 @@ Item {
     property int pixelSize: Config.quickSettings.iconFontSize
     property bool marked: false
 
-    readonly property var palette: Config.statePalette(
-        root.visualState,
-        root.theme,
-        root.hovered,
-        root.pressed
-    )
+    readonly property var palette: Config.statePalette(root.visualState, root.theme, root.hovered, root.pressed)
     readonly property bool showDisabledMark: root.marked || root.palette.disabledMark
 
     implicitWidth: pixelSize + 6

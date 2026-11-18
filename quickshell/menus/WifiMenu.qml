@@ -10,26 +10,22 @@ import "../prompts"
 Item {
     id: root
 
-    signal passwordPromptClosed()
+    signal passwordPromptClosed
 
-    readonly property var wifiDevices: Networking.devices.values
-        .filter(device => device.type === DeviceType.Wifi)
+    readonly property var wifiDevices: Networking.devices.values.filter(device => device.type === DeviceType.Wifi)
     readonly property var networks: {
         const all = [];
 
         for (const device of wifiDevices) {
             for (const network of device.networks.values) {
                 const key = network.name + "|" + network.security;
-                const existingIndex = all.findIndex(entry =>
-                    entry.name + "|" + entry.security === key
-                );
+                const existingIndex = all.findIndex(entry => entry.name + "|" + entry.security === key);
 
                 if (existingIndex === -1) {
                     all.push(network);
                 } else {
                     const existing = all[existingIndex];
-                    if (network.connected
-                        || (!existing.connected && network.signalStrength > existing.signalStrength))
+                    if (network.connected || (!existing.connected && network.signalStrength > existing.signalStrength))
                         all[existingIndex] = network;
                 }
             }
@@ -77,9 +73,7 @@ Item {
     }
 
     function supportsPsk(network) {
-        return network.security === WifiSecurityType.WpaPsk
-            || network.security === WifiSecurityType.Wpa2Psk
-            || network.security === WifiSecurityType.Sae;
+        return network.security === WifiSecurityType.WpaPsk || network.security === WifiSecurityType.Wpa2Psk || network.security === WifiSecurityType.Sae;
     }
 
     function connectNetwork(network) {
@@ -90,8 +84,7 @@ Item {
     }
 
     function activateNetwork(network) {
-        if (!Networking.wifiEnabled || !network
-            || network.connected || network.stateChanging)
+        if (!Networking.wifiEnabled || !network || network.connected || network.stateChanging)
             return;
 
         if (!network.known && supportsPsk(network)) {
@@ -216,9 +209,7 @@ Item {
                     const connected = root.networks.find(network => network.connected);
                     if (connected)
                         return "";
-                    return root.wifiDevices.length > 0
-                        ? "Not connected"
-                        : "No Wi-Fi adapter";
+                    return root.wifiDevices.length > 0 ? "Not connected" : "No Wi-Fi adapter";
                 }
                 color: Config.colors.overlay1
                 font.family: Config.ui.fontFamily
@@ -265,9 +256,7 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     z: -1
-                    enabled: Networking.wifiEnabled
-                        && !networkRow.isConnected
-                        && !networkRow.network.stateChanging
+                    enabled: Networking.wifiEnabled && !networkRow.isConnected && !networkRow.network.stateChanging
                     cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                     onClicked: root.activateNetwork(networkRow.network)
                 }
@@ -282,9 +271,7 @@ Item {
                         Layout.preferredWidth: 28
                         Layout.preferredHeight: 18
                         strength: networkRow.network.signalStrength
-                        visualState: !Networking.wifiEnabled
-                            ? Config.states.disabled
-                            : networkRow.isConnected ? Config.states.active : Config.states.defaultState
+                        visualState: !Networking.wifiEnabled ? Config.states.disabled : networkRow.isConnected ? Config.states.active : Config.states.defaultState
                         theme: networkRow.resolvedTheme
                         hovered: networkRow.hovered
                     }
@@ -304,11 +291,7 @@ Item {
 
                         Text {
                             Layout.fillWidth: true
-                            text: WifiSecurityType.toString(networkRow.network.security)
-                                + " · "
-                                + Math.round(networkRow.network.signalStrength * 100)
-                                + "%"
-                                + (networkRow.network.known ? " · Saved" : "")
+                            text: WifiSecurityType.toString(networkRow.network.security) + " · " + Math.round(networkRow.network.signalStrength * 100) + "%" + (networkRow.network.known ? " · Saved" : "")
                             color: networkRow.resolvedSecondaryColor
                             font.family: Config.ui.fontFamily
                             font.pixelSize: Config.quickSettings.smallFontSize
@@ -339,13 +322,7 @@ Item {
             Text {
                 anchors.centerIn: parent
                 width: parent.width - 16
-                text: !Networking.wifiEnabled
-                    ? "Use the Wi-Fi bar icon to turn Wi-Fi on"
-                    : root.wifiDevices.length === 0
-                        ? "No Wi-Fi adapter or NetworkManager available"
-                        : root.wifiDevices.some(device => device.scannerEnabled)
-                            ? "Scanning for networks…"
-                            : "No networks found"
+                text: !Networking.wifiEnabled ? "Use the Wi-Fi bar icon to turn Wi-Fi on" : root.wifiDevices.length === 0 ? "No Wi-Fi adapter or NetworkManager available" : root.wifiDevices.some(device => device.scannerEnabled) ? "Scanning for networks…" : "No networks found"
                 color: Config.colors.overlay1
                 font.family: Config.ui.fontFamily
                 font.pixelSize: Config.quickSettings.bodyFontSize

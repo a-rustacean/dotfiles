@@ -14,24 +14,17 @@ BarItem {
     visible: player !== null
 
     readonly property var player: {
-        const players = Mpris.players.values.filter(p =>
-            p.trackTitle.length > 0
-            && (p.isPlaying || p.playbackState === MprisPlaybackState.Paused)
-        );
+        const players = Mpris.players.values.filter(p => p.trackTitle.length > 0 && (p.isPlaying || p.playbackState === MprisPlaybackState.Paused));
 
-        return players.find(p => p.isPlaying)
-        ?? players[0]
-        ?? null;
+        return players.find(p => p.isPlaying) ?? players[0] ?? null;
     }
 
     readonly property bool paused: player !== null && !player.isPlaying
-    readonly property string displayTitle: player
-    ? player.trackTitle.replace(/\s+/g, " ").trim()
-    : ""
+    readonly property string displayTitle: player ? player.trackTitle.replace(/\s+/g, " ").trim() : ""
 
     function togglePlayback() {
         if (!player)
-        return;
+            return;
 
         if (player.canTogglePlaying) {
             player.togglePlaying();
@@ -161,9 +154,18 @@ BarItem {
 
                     startX: 0
                     startY: 0
-                    PathLine { x: pauseShape.width; y: pauseShape.height / 2 }
-                    PathLine { x: 0; y: pauseShape.height }
-                    PathLine { x: 0; y: 0 }
+                    PathLine {
+                        x: pauseShape.width
+                        y: pauseShape.height / 2
+                    }
+                    PathLine {
+                        x: 0
+                        y: pauseShape.height
+                    }
+                    PathLine {
+                        x: 0
+                        y: 0
+                    }
                 }
             }
         }
@@ -185,7 +187,7 @@ BarItem {
                 marqueeRow.x = 0;
 
                 if (active && overflow > 0)
-                marquee.start();
+                    marquee.start();
             }
 
             Component.onCompleted: restartMarquee()

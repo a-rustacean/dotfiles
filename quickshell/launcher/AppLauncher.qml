@@ -15,11 +15,11 @@ Scope {
         target: "launcher"
 
         function toggle(): void {
-            launcherPrompt.visible = !launcherPrompt.visible
+            launcherPrompt.visible = !launcherPrompt.visible;
             if (launcherPrompt.visible) {
-                searchInput.text = ""
-                selectedIndex = -1
-                searchInput.forceActiveFocus()
+                searchInput.text = "";
+                selectedIndex = -1;
+                searchInput.forceActiveFocus();
             }
         }
     }
@@ -32,20 +32,18 @@ Scope {
         values: {
             const all = [...DesktopEntries.applications.values];
             const q = searchInput.text.trim().toLowerCase();
-            if (q === "") return all.sort((a, b) => a.name.localeCompare(b.name));
-            return all.filter(d =>
-                (d.name && d.name.toLowerCase().includes(q)) ||
-                (d.genericName && d.genericName.toLowerCase().includes(q)) ||
-                (d.keywords && d.keywords.some(k => k.toLowerCase().includes(q))) ||
-                (d.categories && d.categories.some(c => c.toLowerCase().includes(q)))
-            ).sort((a, b) => {
-                    const an = a.name.toLowerCase();
-                    const bn = b.name.toLowerCase();
-                    const aStarts = an.startsWith(q);
-                    const bStarts = bn.startsWith(q);
-                    if (aStarts && !bStarts) return -1;
-                    if (!aStarts && bStarts) return 1;
-                    return an.localeCompare(bn);
+            if (q === "")
+                return all.sort((a, b) => a.name.localeCompare(b.name));
+            return all.filter(d => (d.name && d.name.toLowerCase().includes(q)) || (d.genericName && d.genericName.toLowerCase().includes(q)) || (d.keywords && d.keywords.some(k => k.toLowerCase().includes(q))) || (d.categories && d.categories.some(c => c.toLowerCase().includes(q)))).sort((a, b) => {
+                const an = a.name.toLowerCase();
+                const bn = b.name.toLowerCase();
+                const aStarts = an.startsWith(q);
+                const bStarts = bn.startsWith(q);
+                if (aStarts && !bStarts)
+                    return -1;
+                if (!aStarts && bStarts)
+                    return 1;
+                return an.localeCompare(bn);
             });
         }
     }
@@ -130,7 +128,8 @@ Scope {
                                 event.accepted = true;
                                 if (root.selectedIndex >= 0) {
                                     const entry = filteredApps.values[root.selectedIndex];
-                                    if (entry) root.launchApp(entry);
+                                    if (entry)
+                                        root.launchApp(entry);
                                 }
                             } else if (event.key === Qt.Key_Tab) {
                                 event.accepted = true;
@@ -167,9 +166,7 @@ Scope {
 
                     width: resultsList.width
                     height: Config.launcher.itemHeight
-                    visualState: root.selectedIndex === delegateRoot.index
-                        ? Config.states.active
-                        : Config.states.defaultState
+                    visualState: root.selectedIndex === delegateRoot.index ? Config.states.active : Config.states.defaultState
                     trackHover: true
                     borderless: true
                     defaultBackgroundColor: "transparent"

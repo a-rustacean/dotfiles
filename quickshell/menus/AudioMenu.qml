@@ -19,18 +19,14 @@ Item {
             Pipewire.preferredDefaultAudioSink = node;
     }
 
-    readonly property var nodes: Pipewire.nodes.values
-        .filter(node => node.audio !== null && !node.isStream && node.isSink !== inputSource)
-        .sort((a, b) => {
-            const defaultNode = inputSource
-                ? Pipewire.defaultAudioSource
-                : Pipewire.defaultAudioSink;
-            if (defaultNode && a.id === defaultNode.id)
-                return -1;
-            if (defaultNode && b.id === defaultNode.id)
-                return 1;
-            return (a.description || a.name).localeCompare(b.description || b.name);
-        })
+    readonly property var nodes: Pipewire.nodes.values.filter(node => node.audio !== null && !node.isStream && node.isSink !== inputSource).sort((a, b) => {
+        const defaultNode = inputSource ? Pipewire.defaultAudioSource : Pipewire.defaultAudioSink;
+        if (defaultNode && a.id === defaultNode.id)
+            return -1;
+        if (defaultNode && b.id === defaultNode.id)
+            return 1;
+        return (a.description || a.name).localeCompare(b.description || b.name);
+    })
 
     PwObjectTracker {
         objects: root.nodes
@@ -78,9 +74,7 @@ Item {
 
                 readonly property var node: modelData
                 readonly property var audio: node.ready ? node.audio : null
-                readonly property var defaultNode: root.inputSource
-                    ? Pipewire.defaultAudioSource
-                    : Pipewire.defaultAudioSink
+                readonly property var defaultNode: root.inputSource ? Pipewire.defaultAudioSource : Pipewire.defaultAudioSink
                 readonly property bool isDefault: defaultNode !== null && node.id === defaultNode.id
 
                 width: deviceList.width
@@ -123,15 +117,11 @@ Item {
 
                         MenuIconButton {
                             glyph: root.inputSource ? "󰍬" : "󰕾"
-                            actionName: deviceRow.audio && deviceRow.audio.muted
-                                ? "Unmute " + (root.inputSource ? "audio input" : "audio output")
-                                : "Mute " + (root.inputSource ? "audio input" : "audio output")
+                            actionName: deviceRow.audio && deviceRow.audio.muted ? "Unmute " + (root.inputSource ? "audio input" : "audio output") : "Mute " + (root.inputSource ? "audio input" : "audio output")
                             marked: !deviceRow.audio || deviceRow.audio.muted
                             theme: deviceRow.resolvedTheme
                             borderless: !deviceRow.isDefault
-                            visualState: !deviceRow.audio || deviceRow.audio.muted
-                                ? Config.states.disabled
-                                : Config.states.defaultState
+                            visualState: !deviceRow.audio || deviceRow.audio.muted ? Config.states.disabled : Config.states.defaultState
                             enabled: deviceRow.audio !== null
                             onClicked: deviceRow.audio.muted = !deviceRow.audio.muted
                         }
@@ -141,16 +131,12 @@ Item {
                             audio: deviceRow.audio
                             theme: deviceRow.resolvedTheme
                             surfaceHovered: deviceRow.hovered
-                            visualState: !deviceRow.audio || deviceRow.audio.muted
-                                ? Config.states.disabled
-                                : deviceRow.isDefault ? Config.states.active : Config.states.defaultState
+                            visualState: !deviceRow.audio || deviceRow.audio.muted ? Config.states.disabled : deviceRow.isDefault ? Config.states.active : Config.states.defaultState
                         }
 
                         Text {
                             Layout.preferredWidth: 34
-                            text: deviceRow.audio
-                                ? Math.round(deviceRow.audio.volume * 100) + "%"
-                                : "—"
+                            text: deviceRow.audio ? Math.round(deviceRow.audio.volume * 100) + "%" : "—"
                             color: deviceRow.resolvedSecondaryColor
                             font.family: Config.ui.fontFamily
                             font.pixelSize: Config.quickSettings.smallFontSize
@@ -163,9 +149,7 @@ Item {
             Text {
                 anchors.centerIn: parent
                 width: parent.width - 16
-                text: Pipewire.ready
-                    ? (root.inputSource ? "No input devices found" : "No output devices found")
-                    : "Waiting for PipeWire…"
+                text: Pipewire.ready ? (root.inputSource ? "No input devices found" : "No output devices found") : "Waiting for PipeWire…"
                 color: Config.colors.overlay1
                 font.family: Config.ui.fontFamily
                 font.pixelSize: Config.quickSettings.bodyFontSize

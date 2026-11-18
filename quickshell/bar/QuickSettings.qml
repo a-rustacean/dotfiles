@@ -24,20 +24,11 @@ RowLayout {
 
     readonly property var bluetoothAdapter: Bluetooth.defaultAdapter
     readonly property bool bluetoothMenuOpen: root.activeMenu === "bluetooth"
-    readonly property bool hasAudioInput: Pipewire.nodes.values.some(
-        node => node.audio !== null && !node.isStream && !node.isSink
-    )
-    readonly property bool hasAudioOutput: Pipewire.nodes.values.some(
-        node => node.audio !== null && !node.isStream && node.isSink
-    )
-    readonly property bool hasWifiDevice: Networking.devices.values.some(
-        device => device.type === DeviceType.Wifi
-    )
-    readonly property bool bluetoothConnected: root.bluetoothAdapter !== null
-        && root.bluetoothAdapter.devices.values.some(device => device.connected)
-    readonly property bool wifiConnected: Networking.devices.values
-        .filter(device => device.type === DeviceType.Wifi)
-        .some(device => device.networks.values.some(network => network.connected))
+    readonly property bool hasAudioInput: Pipewire.nodes.values.some(node => node.audio !== null && !node.isStream && !node.isSink)
+    readonly property bool hasAudioOutput: Pipewire.nodes.values.some(node => node.audio !== null && !node.isStream && node.isSink)
+    readonly property bool hasWifiDevice: Networking.devices.values.some(device => device.type === DeviceType.Wifi)
+    readonly property bool bluetoothConnected: root.bluetoothAdapter !== null && root.bluetoothAdapter.devices.values.some(device => device.connected)
+    readonly property bool wifiConnected: Networking.devices.values.filter(device => device.type === DeviceType.Wifi).some(device => device.networks.values.some(network => network.connected))
 
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSource, Pipewire.defaultAudioSink]
@@ -103,8 +94,7 @@ RowLayout {
 
     function stopBluetoothDiscovery() {
         const adapter = root.bluetoothAdapter;
-        if (adapter && adapter.discovering
-            && root.bluetoothDiscoveryOwnerAdapter === adapter)
+        if (adapter && adapter.discovering && root.bluetoothDiscoveryOwnerAdapter === adapter)
             adapter.discovering = false;
 
         root.bluetoothDiscoveryPending = false;
@@ -113,19 +103,12 @@ RowLayout {
     }
 
     function connectBluetoothDevice(device) {
-        if (!device || !root.bluetoothAdapter || !root.bluetoothAdapter.enabled
-            || bluetoothConnectProcess.running || root.bluetoothForgettingDevice)
+        if (!device || !root.bluetoothAdapter || !root.bluetoothAdapter.enabled || bluetoothConnectProcess.running || root.bluetoothForgettingDevice)
             return;
 
         bluetoothConnectionError = "";
         bluetoothConnectingDevice = device;
-        bluetoothConnectProcess.command = [
-            "bluetoothctl",
-            "--agent",
-            "NoInputNoOutput",
-            "connect",
-            device.address
-        ];
+        bluetoothConnectProcess.command = ["bluetoothctl", "--agent", "NoInputNoOutput", "connect", device.address];
         bluetoothConnectProcess.running = true;
         if (root.bluetoothAdapter.discovering)
             root.bluetoothAdapter.discovering = false;
@@ -178,8 +161,7 @@ RowLayout {
             if (root.bluetoothAdapter?.discovering) {
                 root.bluetoothDiscoveryPending = false;
                 root.bluetoothDiscoveryAdapter = null;
-            } else if (root.bluetoothMenuOpen && root.bluetoothAdapter?.enabled
-                && !bluetoothConnectProcess.running) {
+            } else if (root.bluetoothMenuOpen && root.bluetoothAdapter?.enabled && !bluetoothConnectProcess.running) {
                 root.bluetoothDiscoveryOwnerAdapter = null;
                 Qt.callLater(() => root.ensureBluetoothDiscovery());
             } else {
@@ -215,8 +197,7 @@ RowLayout {
             const output = (bluetoothConnectStdout.text + "\n" + bluetoothConnectStderr.text).trim();
             const failure = output.split("\n").find(line => /failed|error/i.test(line));
             if (exitCode !== 0 || failure) {
-                root.bluetoothConnectionError = failure
-                    || "Bluetooth connection failed; check that Bluetooth is enabled";
+                root.bluetoothConnectionError = failure || "Bluetooth connection failed; check that Bluetooth is enabled";
             }
 
             root.bluetoothConnectingDevice = null;
@@ -270,9 +251,7 @@ RowLayout {
         menuController: root
         visible: Bluetooth.defaultAdapter !== null
         toggleEnabled: root.bluetoothAdapter !== null
-        visualState: root.bluetoothAdapter?.enabled
-            ? root.bluetoothConnected ? Config.states.active : Config.states.defaultState
-            : Config.states.disabled
+        visualState: root.bluetoothAdapter?.enabled ? root.bluetoothConnected ? Config.states.active : Config.states.defaultState : Config.states.disabled
     }
 
     QuickSettingsButton {
@@ -283,9 +262,7 @@ RowLayout {
         toggleAction: root.toggleWifi
         menuController: root
         visible: root.hasWifiDevice
-        visualState: Networking.wifiEnabled
-            ? root.wifiConnected ? Config.states.active : Config.states.defaultState
-            : Config.states.disabled
+        visualState: Networking.wifiEnabled ? root.wifiConnected ? Config.states.active : Config.states.defaultState : Config.states.disabled
     }
 
     Timer {
@@ -293,9 +270,7 @@ RowLayout {
         interval: 250
         repeat: false
         onTriggered: {
-            if (inputButton.hovered || outputButton.hovered
-                || bluetoothButton.hovered || wifiButton.hovered
-                || popupHover.hovered) {
+            if (inputButton.hovered || outputButton.hovered || bluetoothButton.hovered || wifiButton.hovered || popupHover.hovered) {
                 return;
             }
             if (root.activeMenu === "wifi" && menuLoader.item?.pendingNetwork)
@@ -313,13 +288,7 @@ RowLayout {
         grabFocus: false
         color: "transparent"
         implicitWidth: Config.quickSettings.menuWidth
-        implicitHeight: Math.max(1, Math.min(
-            Config.quickSettings.menuHeight,
-            popup.screen
-                ? popup.screen.height - Config.bar.height - Config.quickSettings.screenMargin
-                : Config.quickSettings.menuHeight,
-            menuLoader.implicitHeight + Config.quickSettings.menuPadding * 2
-        ))
+        implicitHeight: Math.max(1, Math.min(Config.quickSettings.menuHeight, popup.screen ? popup.screen.height - Config.bar.height - Config.quickSettings.screenMargin : Config.quickSettings.menuHeight, menuLoader.implicitHeight + Config.quickSettings.menuPadding * 2))
 
         onVisibleChanged: {
             if (!visible && root.activeMenu !== "") {
@@ -331,9 +300,7 @@ RowLayout {
         anchor {
             item: root.anchorItem
             rect.x: root.anchorItem ? (root.anchorItem.width - popup.width) / 2 : 0
-            rect.y: root.anchorItem
-                ? root.anchorItem.height + Config.quickSettings.menuGap
-                : 0
+            rect.y: root.anchorItem ? root.anchorItem.height + Config.quickSettings.menuGap : 0
             rect.width: 1
             rect.height: 1
             edges: Edges.Bottom | Edges.Left

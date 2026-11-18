@@ -1,0 +1,9 @@
+# Editor swap files
+*.swp
+*.swo
+*~
+
+# Local backups and overrides
+*.bak
+*.bak.*
+*.local

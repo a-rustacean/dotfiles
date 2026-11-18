@@ -147,7 +147,7 @@ hl.window_rule({
 
 hl.window_rule({
   match = {
-    class = "vesktop|com.mitchellh.ghostty|zen-beta|Alacritty",
+    class = "^(vesktop|com\\.mitchellh\\.ghostty|zen-beta|Alacritty)$",
   },
 
   opacity = "0.8",

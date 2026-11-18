@@ -7,7 +7,7 @@ import QtQuick
 import QtQuick.Layouts
 
 import "../components"
-import "../config.js" as Config
+import qs
 import "../menus"
 
 RowLayout {
@@ -223,7 +223,7 @@ RowLayout {
         id: inputButton
         implicitWidth: Config.bar.height - Config.bar.margin
         visible: root.hasAudioInput
-        visualState: root.inputMuted ? Config.states.disabled : Config.states.default
+        visualState: root.inputMuted ? Config.states.disabled : Config.states.defaultState
         highlighted: root.activeMenu === "audio-input"
         Accessible.role: Accessible.Button
         Accessible.name: "Audio input settings"
@@ -258,7 +258,7 @@ RowLayout {
         id: outputButton
         implicitWidth: Config.bar.height - Config.bar.margin
         visible: root.hasAudioOutput
-        visualState: root.outputMuted ? Config.states.disabled : Config.states.default
+        visualState: root.outputMuted ? Config.states.disabled : Config.states.defaultState
         highlighted: root.activeMenu === "audio-output"
         Accessible.role: Accessible.Button
         Accessible.name: "Audio output settings"
@@ -294,7 +294,7 @@ RowLayout {
         implicitWidth: Config.bar.height - Config.bar.margin
         visible: Bluetooth.defaultAdapter !== null
         visualState: root.bluetoothAdapter?.enabled
-            ? root.bluetoothConnected ? Config.states.active : Config.states.default
+            ? root.bluetoothConnected ? Config.states.active : Config.states.defaultState
             : Config.states.disabled
         highlighted: root.activeMenu === "bluetooth"
         Accessible.role: Accessible.Button
@@ -332,7 +332,7 @@ RowLayout {
         implicitWidth: Config.bar.height - Config.bar.margin
         visible: root.hasWifiDevice
         visualState: Networking.wifiEnabled
-            ? root.wifiConnected ? Config.states.active : Config.states.default
+            ? root.wifiConnected ? Config.states.active : Config.states.defaultState
             : Config.states.disabled
         highlighted: root.activeMenu === "wifi"
         Accessible.role: Accessible.Button

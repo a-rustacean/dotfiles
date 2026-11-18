@@ -1,12 +1,12 @@
 import Quickshell
 import QtQuick
 
-import "../config.js" as Config
+import qs
 
 Rectangle {
     id: root
 
-    property string visualState: Config.states.default
+    property string visualState: Config.states.defaultState
     property string theme: Config.themes.dark
     property var defaultBackgroundColor: null
     property color borderColor: Config.colors.surface1

@@ -3,7 +3,7 @@ import Quickshell.Wayland
 import QtQuick
 import QtQuick.Effects
 
-import "../config.js" as Config
+import qs
 
 PanelWindow {
     id: root

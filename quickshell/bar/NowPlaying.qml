@@ -5,7 +5,7 @@ import QtQuick.Layouts
 import QtQuick.Shapes
 
 import "../components"
-import "../config.js" as Config
+import qs
 
 BarItem {
     id: root

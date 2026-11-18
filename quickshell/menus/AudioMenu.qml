@@ -4,7 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import "../components"
-import "../config.js" as Config
+import qs
 
 Item {
     id: root
@@ -85,7 +85,7 @@ Item {
 
                 width: deviceList.width
                 height: Config.quickSettings.rowHeight + Config.quickSettings.audioRowInset * 2
-                visualState: deviceRow.isDefault ? Config.states.active : Config.states.default
+                visualState: deviceRow.isDefault ? Config.states.active : Config.states.defaultState
                 trackHover: true
                 borderless: !deviceRow.isDefault
                 blurRegionEnabled: false
@@ -137,7 +137,7 @@ Item {
                             borderless: !deviceRow.isDefault
                             visualState: !deviceRow.audio || deviceRow.audio.muted
                                 ? Config.states.disabled
-                                : Config.states.default
+                                : Config.states.defaultState
                             enabled: deviceRow.audio !== null
                             onClicked: deviceRow.audio.muted = !deviceRow.audio.muted
                         }
@@ -149,7 +149,7 @@ Item {
                             surfaceHovered: deviceRow.hovered
                             visualState: !deviceRow.audio || deviceRow.audio.muted
                                 ? Config.states.disabled
-                                : deviceRow.isDefault ? Config.states.active : Config.states.default
+                                : deviceRow.isDefault ? Config.states.active : Config.states.defaultState
                         }
 
                         Text {

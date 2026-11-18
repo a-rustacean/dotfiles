@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 
-import "../config.js" as Config
+import qs
 
 Button {
     id: root
@@ -10,7 +10,7 @@ Button {
     property string actionName: ""
     property bool marked: false
     property bool borderless: false
-    property string visualState: Config.states.default
+    property string visualState: Config.states.defaultState
     property string theme: Config.themes.dark
 
     readonly property string effectiveVisualState: !root.enabled || root.marked

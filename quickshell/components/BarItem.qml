@@ -1,6 +1,6 @@
 import QtQuick
 
-import "../config.js" as Config
+import qs
 
 ThemedRectangle {
     id: root

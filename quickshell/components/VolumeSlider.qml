@@ -1,13 +1,13 @@
 import QtQuick
 import QtQuick.Controls
 
-import "../config.js" as Config
+import qs
 
 Slider {
     id: root
 
     property var audio: null
-    property string visualState: Config.states.default
+    property string visualState: Config.states.defaultState
     property string theme: Config.themes.dark
     property bool pointerHovered: false
     property bool surfaceHovered: false

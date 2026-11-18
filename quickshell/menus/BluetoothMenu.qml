@@ -3,7 +3,7 @@ import QtQuick
 import QtQuick.Layouts
 
 import "../components"
-import "../config.js" as Config
+import qs
 
 Item {
     id: root
@@ -140,7 +140,7 @@ Item {
                     id: deviceSurface
                     anchors.fill: parent
                     visible: deviceRow.device !== null
-                    visualState: deviceRow.isConnected ? Config.states.active : Config.states.default
+                    visualState: deviceRow.isConnected ? Config.states.active : Config.states.defaultState
                     trackHover: true
                     borderless: !deviceRow.isConnected
                     blurRegionEnabled: false
@@ -169,7 +169,7 @@ Item {
                             Layout.preferredWidth: 28
                             Layout.preferredHeight: 20
                             icon: root.deviceGlyph(deviceRow.device)
-                            visualState: deviceRow.isConnected ? Config.states.active : Config.states.default
+                            visualState: deviceRow.isConnected ? Config.states.active : Config.states.defaultState
                             theme: deviceSurface.resolvedTheme
                             hovered: deviceSurface.hovered
                         }

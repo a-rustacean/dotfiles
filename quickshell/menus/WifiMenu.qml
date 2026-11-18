@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 
 import "../components"
-import "../config.js" as Config
+import qs
 import "../prompts"
 
 Item {
@@ -263,7 +263,7 @@ Item {
 
                 width: networkList.width
                 height: Config.quickSettings.rowHeight
-                visualState: networkRow.isConnected ? Config.states.active : Config.states.default
+                visualState: networkRow.isConnected ? Config.states.active : Config.states.defaultState
                 trackHover: true
                 borderless: !networkRow.isConnected
                 blurRegionEnabled: false
@@ -290,7 +290,7 @@ Item {
                         strength: networkRow.network.signalStrength
                         visualState: !Networking.wifiEnabled
                             ? Config.states.disabled
-                            : networkRow.isConnected ? Config.states.active : Config.states.default
+                            : networkRow.isConnected ? Config.states.active : Config.states.defaultState
                         theme: networkRow.resolvedTheme
                         hovered: networkRow.hovered
                     }

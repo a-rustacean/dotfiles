@@ -1,12 +1,12 @@
 import QtQuick
 
-import "../config.js" as Config
+import qs
 
 Item {
     id: root
 
     property real strength: 0
-    property string visualState: Config.states.default
+    property string visualState: Config.states.defaultState
     property string theme: Config.themes.dark
     property bool hovered: false
     property bool marked: false

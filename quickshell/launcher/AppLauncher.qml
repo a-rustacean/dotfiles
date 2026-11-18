@@ -5,7 +5,7 @@ import QtQuick
 import QtQuick.Layouts
 
 import "../components"
-import "../config.js" as Config
+import qs
 
 Scope {
     id: root
@@ -169,7 +169,7 @@ Scope {
                     height: Config.launcher.itemHeight
                     visualState: root.selectedIndex === delegateRoot.index
                         ? Config.states.active
-                        : Config.states.default
+                        : Config.states.defaultState
                     trackHover: true
                     borderless: true
                     defaultBackgroundColor: "transparent"

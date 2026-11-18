@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import "../components"
-import "../config.js" as Config
+import qs
 
 Prompt {
     id: root

@@ -6,7 +6,7 @@ import QtQuick.Layouts
 import QtQuick.Effects
 
 import "../components"
-import "../config.js" as Config
+import qs
 
 PanelWindow {
     id: root
@@ -108,7 +108,7 @@ PanelWindow {
 
                     visualState: isActive
                         ? Config.states.active
-                        : workspace ? Config.states.default : Config.states.dimmed
+                        : workspace ? Config.states.defaultState : Config.states.dimmed
 
                     Text {
                         anchors.centerIn: parent

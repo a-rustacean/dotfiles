@@ -5,7 +5,8 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Effects
 
-import "config.js" as Config
+import "../components"
+import "../config.js" as Config
 
 PanelWindow {
     id: root
@@ -60,7 +61,7 @@ PanelWindow {
 
                 Image {
                     anchors.centerIn: parent
-                    source: "./nix.svg"
+                    source: "../nix.svg"
                     width: Config.bar.height
                     height: Config.bar.height
                 }
@@ -105,16 +106,14 @@ PanelWindow {
                     property var workspace: Hyprland.workspaces.values.find(w => w.id == index + 1)
                     property bool isActive: Hyprland.focusedWorkspace?.id === (index + 1)
 
-                    active: isActive
-                    selected: isActive
-                    disabled: !workspace
+                    visualState: isActive
+                        ? Config.states.active
+                        : workspace ? Config.states.default : Config.states.dimmed
 
                     Text {
                         anchors.centerIn: parent
                         text: index + 1
-                        color: isActive
-                            ? Config.ui.selectedForeground
-                            : workspace ? Config.colors.text : Config.colors.subtext0
+                        color: parent.resolvedForegroundColor
                         font.family: Config.bar.fontFamily
                         font.pixelSize: Config.bar.fontSize
                     }

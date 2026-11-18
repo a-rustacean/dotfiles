@@ -1,12 +1,11 @@
 import Quickshell
 import Quickshell.Networking
-import Quickshell.Wayland
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Effects
 import QtQuick.Layouts
 
-import "config.js" as Config
+import "../components"
+import "../config.js" as Config
+import "../prompts"
 
 Item {
     id: root
@@ -182,118 +181,14 @@ Item {
         }
     }
 
-    PanelWindow {
-        id: passwordPrompt
-
+    WifiPasswordPrompt {
         visible: root.pendingNetwork !== null
-        screen: root.hostScreen
-        color: "transparent"
-        focusable: true
-
-        WlrLayershell.layer: WlrLayer.Overlay
-        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-        WlrLayershell.namespace: "quickshell-wifi-password"
-
-        exclusionMode: ExclusionMode.Ignore
-
-        BackgroundEffect.blurRegion: Region {
-            item: passwordCard
-            radius: Config.ui.rounding
-        }
-
-        anchors {
-            top: true
-            bottom: true
-            left: true
-            right: true
-        }
-
-        onVisibleChanged: {
-            if (visible)
-                Qt.callLater(() => passwordField.forceActiveFocus());
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            color: "#66000000"
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: root.cancelPassword()
-        }
-
-        ThemedRectangle {
-            id: passwordCard
-
-            anchors.centerIn: parent
-            width: Config.quickSettings.menuWidth
-            height: 156
-            blurRegionEnabled: false
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: event => event.accepted = true
-            }
-
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: Config.quickSettings.menuPadding
-                spacing: Config.quickSettings.menuSpacing
-
-                Text {
-                    Layout.fillWidth: true
-                    text: "Connect to " + (root.pendingNetwork?.name || "Wi-Fi")
-                    color: Config.colors.text
-                    font.family: Config.ui.fontFamily
-                    font.pixelSize: Config.quickSettings.titleFontSize
-                    font.bold: true
-                    elide: Text.ElideRight
-                }
-
-                TextField {
-                    id: passwordField
-
-                    Layout.fillWidth: true
-                    placeholderText: "Wi-Fi password"
-                    echoMode: TextInput.Password
-                    text: root.password
-                    color: Config.colors.text
-                    placeholderTextColor: Config.colors.overlay1
-                    font.family: Config.ui.fontFamily
-                    font.pixelSize: Config.quickSettings.bodyFontSize
-                    selectByMouse: true
-
-                    background: ThemedRectangle {
-                        borderColor: passwordField.activeFocus
-                            ? Config.colors.text
-                            : Config.colors.surface1
-                        blurRegionEnabled: false
-                    }
-
-                    onTextChanged: root.password = text
-                    onAccepted: root.submitPassword()
-                    Keys.onEscapePressed: root.cancelPassword()
-                }
-
-                RowLayout {
-                    Layout.alignment: Qt.AlignRight
-
-                    MenuIconButton {
-                        glyph: "×"
-                        actionName: "Cancel Wi-Fi password entry"
-                        onClicked: root.cancelPassword()
-                    }
-
-                    MenuIconButton {
-                        glyph: "✓"
-                        actionName: "Connect to Wi-Fi network"
-                        enabled: root.password.length > 0
-                        onClicked: root.submitPassword()
-                    }
-                }
-            }
-        }
+        targetScreen: root.hostScreen
+        networkName: root.pendingNetwork?.name || "Wi-Fi"
+        password: root.password
+        onPasswordEdited: value => root.password = value
+        onSubmitRequested: root.submitPassword()
+        onCancelRequested: root.cancelPassword()
     }
 
     ColumnLayout {
@@ -368,13 +263,9 @@ Item {
 
                 width: networkList.width
                 height: Config.quickSettings.rowHeight
-                backgroundColor: isConnected
-                    ? Config.ui.selectedBackground
-                    : Config.bar.disabledBackground
-                borderSize: isConnected ? Config.ui.borderWidth : 0
-                borderColor: isConnected
-                    ? Config.ui.selectedBackground
-                    : Config.colors.surface1
+                visualState: networkRow.isConnected ? Config.states.active : Config.states.default
+                trackHover: true
+                borderless: !networkRow.isConnected
                 blurRegionEnabled: false
 
                 MouseArea {
@@ -397,8 +288,11 @@ Item {
                         Layout.preferredWidth: 28
                         Layout.preferredHeight: 18
                         strength: networkRow.network.signalStrength
-                        selected: networkRow.isConnected
-                        marked: !Networking.wifiEnabled
+                        visualState: !Networking.wifiEnabled
+                            ? Config.states.disabled
+                            : networkRow.isConnected ? Config.states.active : Config.states.default
+                        theme: networkRow.resolvedTheme
+                        hovered: networkRow.hovered
                     }
 
                     ColumnLayout {
@@ -408,9 +302,7 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: networkRow.network.name || "Hidden network"
-                            color: networkRow.isConnected
-                                ? Config.ui.selectedForeground
-                                : Config.colors.text
+                            color: networkRow.resolvedForegroundColor
                             font.family: Config.ui.fontFamily
                             font.pixelSize: Config.quickSettings.bodyFontSize
                             elide: Text.ElideRight
@@ -423,9 +315,7 @@ Item {
                                 + Math.round(networkRow.network.signalStrength * 100)
                                 + "%"
                                 + (networkRow.network.known ? " · Saved" : "")
-                            color: networkRow.isConnected
-                                ? Config.ui.selectedSecondary
-                                : Config.colors.overlay1
+                            color: networkRow.resolvedSecondaryColor
                             font.family: Config.ui.fontFamily
                             font.pixelSize: Config.quickSettings.smallFontSize
                             elide: Text.ElideRight
@@ -435,7 +325,7 @@ Item {
                     MenuIconButton {
                         glyph: "󰌸"
                         actionName: "Disconnect from " + networkRow.network.name
-                        onSelectedSurface: networkRow.isConnected
+                        theme: networkRow.resolvedTheme
                         visible: networkRow.isConnected
                         enabled: Networking.wifiEnabled && !networkRow.network.stateChanging
                         onClicked: networkRow.network.disconnect()
@@ -444,7 +334,7 @@ Item {
                     MenuIconButton {
                         glyph: "󰆴"
                         actionName: "Forget Wi-Fi network " + networkRow.network.name
-                        onSelectedSurface: networkRow.isConnected
+                        theme: networkRow.resolvedTheme
                         visible: networkRow.network.known
                         enabled: visible
                         onClicked: root.forgetNetwork(networkRow.network)

@@ -6,7 +6,9 @@ import Quickshell.Services.Pipewire
 import QtQuick
 import QtQuick.Layouts
 
-import "config.js" as Config
+import "../components"
+import "../config.js" as Config
+import "../menus"
 
 RowLayout {
     id: root
@@ -29,6 +31,11 @@ RowLayout {
     readonly property bool hasWifiDevice: Networking.devices.values.some(
         device => device.type === DeviceType.Wifi
     )
+    readonly property bool bluetoothConnected: root.bluetoothAdapter !== null
+        && root.bluetoothAdapter.devices.values.some(device => device.connected)
+    readonly property bool wifiConnected: Networking.devices.values
+        .filter(device => device.type === DeviceType.Wifi)
+        .some(device => device.networks.values.some(network => network.connected))
 
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSource, Pipewire.defaultAudioSink]
@@ -216,15 +223,17 @@ RowLayout {
         id: inputButton
         implicitWidth: Config.bar.height - Config.bar.margin
         visible: root.hasAudioInput
-        active: root.activeMenu === "audio-input"
+        visualState: root.inputMuted ? Config.states.disabled : Config.states.default
+        highlighted: root.activeMenu === "audio-input"
         Accessible.role: Accessible.Button
         Accessible.name: "Audio input settings"
 
         StatusIcon {
             anchors.centerIn: parent
             icon: "󰍬"
-            marked: root.inputMuted
-            opacity: root.inputMuted ? 0.6 : 1
+            visualState: inputButton.visualState
+            theme: inputButton.resolvedTheme
+            hovered: inputButton.hovered
         }
 
         MouseArea {
@@ -249,15 +258,17 @@ RowLayout {
         id: outputButton
         implicitWidth: Config.bar.height - Config.bar.margin
         visible: root.hasAudioOutput
-        active: root.activeMenu === "audio-output"
+        visualState: root.outputMuted ? Config.states.disabled : Config.states.default
+        highlighted: root.activeMenu === "audio-output"
         Accessible.role: Accessible.Button
         Accessible.name: "Audio output settings"
 
         StatusIcon {
             anchors.centerIn: parent
             icon: "󰕾"
-            marked: root.outputMuted
-            opacity: root.outputMuted ? 0.6 : 1
+            visualState: outputButton.visualState
+            theme: outputButton.resolvedTheme
+            hovered: outputButton.hovered
         }
 
         MouseArea {
@@ -282,15 +293,19 @@ RowLayout {
         id: bluetoothButton
         implicitWidth: Config.bar.height - Config.bar.margin
         visible: Bluetooth.defaultAdapter !== null
-        active: root.activeMenu === "bluetooth"
+        visualState: root.bluetoothAdapter?.enabled
+            ? root.bluetoothConnected ? Config.states.active : Config.states.default
+            : Config.states.disabled
+        highlighted: root.activeMenu === "bluetooth"
         Accessible.role: Accessible.Button
         Accessible.name: "Bluetooth settings"
 
         StatusIcon {
             anchors.centerIn: parent
             icon: "󰂯"
-            marked: !root.bluetoothAdapter || !root.bluetoothAdapter.enabled
-            opacity: !root.bluetoothAdapter || !root.bluetoothAdapter.enabled ? 0.6 : 1
+            visualState: bluetoothButton.visualState
+            theme: bluetoothButton.resolvedTheme
+            hovered: bluetoothButton.hovered
         }
 
         MouseArea {
@@ -316,15 +331,19 @@ RowLayout {
         id: wifiButton
         implicitWidth: Config.bar.height - Config.bar.margin
         visible: root.hasWifiDevice
-        active: root.activeMenu === "wifi"
+        visualState: Networking.wifiEnabled
+            ? root.wifiConnected ? Config.states.active : Config.states.default
+            : Config.states.disabled
+        highlighted: root.activeMenu === "wifi"
         Accessible.role: Accessible.Button
         Accessible.name: "Wi-Fi settings"
 
         StatusIcon {
             anchors.centerIn: parent
             icon: "󰖩"
-            marked: !Networking.wifiEnabled
-            opacity: Networking.wifiEnabled ? 1 : 0.6
+            visualState: wifiButton.visualState
+            theme: wifiButton.resolvedTheme
+            hovered: wifiButton.hovered
         }
 
         MouseArea {

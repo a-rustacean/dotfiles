@@ -3,7 +3,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import "config.js" as Config
+import "../components"
+import "../config.js" as Config
 
 Item {
     id: root
@@ -84,13 +85,9 @@ Item {
 
                 width: deviceList.width
                 height: Config.quickSettings.rowHeight + Config.quickSettings.audioRowInset * 2
-                backgroundColor: isDefault
-                    ? Config.ui.selectedBackground
-                    : Config.bar.disabledBackground
-                borderSize: isDefault ? Config.ui.borderWidth : 0
-                borderColor: isDefault
-                    ? Config.ui.selectedBackground
-                    : Config.colors.surface1
+                visualState: deviceRow.isDefault ? Config.states.active : Config.states.default
+                trackHover: true
+                borderless: !deviceRow.isDefault
                 blurRegionEnabled: false
 
                 MouseArea {
@@ -118,9 +115,7 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: deviceRow.node.description || deviceRow.node.nickname || deviceRow.node.name
-                            color: deviceRow.isDefault
-                                ? Config.ui.selectedForeground
-                                : Config.colors.text
+                            color: deviceRow.resolvedForegroundColor
                             font.family: Config.ui.fontFamily
                             font.pixelSize: Config.quickSettings.bodyFontSize
                             elide: Text.ElideRight
@@ -138,8 +133,11 @@ Item {
                                 ? "Unmute " + (root.inputSource ? "audio input" : "audio output")
                                 : "Mute " + (root.inputSource ? "audio input" : "audio output")
                             marked: !deviceRow.audio || deviceRow.audio.muted
-                            onSelectedSurface: deviceRow.isDefault
+                            theme: deviceRow.resolvedTheme
                             borderless: !deviceRow.isDefault
+                            visualState: !deviceRow.audio || deviceRow.audio.muted
+                                ? Config.states.disabled
+                                : Config.states.default
                             enabled: deviceRow.audio !== null
                             onClicked: deviceRow.audio.muted = !deviceRow.audio.muted
                         }
@@ -147,7 +145,11 @@ Item {
                         VolumeSlider {
                             Layout.fillWidth: true
                             audio: deviceRow.audio
-                            selected: deviceRow.isDefault
+                            theme: deviceRow.resolvedTheme
+                            surfaceHovered: deviceRow.hovered
+                            visualState: !deviceRow.audio || deviceRow.audio.muted
+                                ? Config.states.disabled
+                                : deviceRow.isDefault ? Config.states.active : Config.states.default
                         }
 
                         Text {
@@ -155,9 +157,7 @@ Item {
                             text: deviceRow.audio
                                 ? Math.round(deviceRow.audio.volume * 100) + "%"
                                 : "—"
-                            color: deviceRow.isDefault
-                                ? Config.ui.selectedSecondary
-                                : Config.colors.subtext0
+                            color: deviceRow.resolvedSecondaryColor
                             font.family: Config.ui.fontFamily
                             font.pixelSize: Config.quickSettings.smallFontSize
                             horizontalAlignment: Text.AlignRight

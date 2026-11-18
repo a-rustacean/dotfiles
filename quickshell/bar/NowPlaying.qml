@@ -4,16 +4,14 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Shapes
 
-import "config.js" as Config
+import "../components"
+import "../config.js" as Config
 
 BarItem {
     id: root
 
     implicitWidth: Math.min(Config.bar.nowPlayingWidth, marqueeRow.implicitWidth + 38)
     visible: player !== null
-    active: hovered
-
-    property bool hovered: false
 
     readonly property var player: {
         const players = Mpris.players.values.filter(p =>
@@ -92,7 +90,7 @@ BarItem {
                             width: 2
                             height: 4
                             radius: 1
-                            color: Config.colors.text
+                            color: root.resolvedForegroundColor
                             anchors.centerIn: parent
 
                             SequentialAnimation {
@@ -142,7 +140,7 @@ BarItem {
                             width: 2
                             height: 10
                             radius: 1
-                            color: Config.colors.text
+                            color: root.resolvedForegroundColor
                             anchors.centerIn: parent
                         }
                     }
@@ -158,7 +156,7 @@ BarItem {
                 visible: root.paused
 
                 ShapePath {
-                    fillColor: Config.colors.text
+                    fillColor: root.resolvedForegroundColor
                     strokeColor: "transparent"
 
                     startX: 0
@@ -205,7 +203,7 @@ BarItem {
                     id: firstCopy
 
                     text: root.displayTitle
-                    color: Config.colors.text
+                    color: root.resolvedForegroundColor
                     font.family: Config.bar.fontFamily
                     font.pixelSize: Config.bar.fontSize
                     textFormat: Text.PlainText
@@ -226,7 +224,7 @@ BarItem {
                         width: parent.width
                         height: width
                         radius: width / 2
-                        color: Config.colors.overlay1
+                        color: root.resolvedSecondaryColor
                     }
                 }
 
@@ -234,7 +232,7 @@ BarItem {
                     visible: viewport.overflow > 0
 
                     text: root.displayTitle
-                    color: Config.colors.text
+                    color: root.resolvedForegroundColor
                     font.family: Config.bar.fontFamily
                     font.pixelSize: Config.bar.fontSize
                     textFormat: Text.PlainText

@@ -2,7 +2,8 @@ import Quickshell.Bluetooth
 import QtQuick
 import QtQuick.Layouts
 
-import "config.js" as Config
+import "../components"
+import "../config.js" as Config
 
 Item {
     id: root
@@ -136,15 +137,12 @@ Item {
                 }
 
                 ThemedRectangle {
+                    id: deviceSurface
                     anchors.fill: parent
                     visible: deviceRow.device !== null
-                    backgroundColor: deviceRow.isConnected
-                    ? Config.ui.selectedBackground
-                    : Config.bar.disabledBackground
-                    borderSize: deviceRow.isConnected ? Config.ui.borderWidth : 0
-                    borderColor: deviceRow.isConnected
-                    ? Config.ui.selectedBackground
-                    : Config.colors.surface1
+                    visualState: deviceRow.isConnected ? Config.states.active : Config.states.default
+                    trackHover: true
+                    borderless: !deviceRow.isConnected
                     blurRegionEnabled: false
 
                     MouseArea {
@@ -171,9 +169,9 @@ Item {
                             Layout.preferredWidth: 28
                             Layout.preferredHeight: 20
                             icon: root.deviceGlyph(deviceRow.device)
-                            color: deviceRow.isConnected
-                            ? Config.ui.selectedForeground
-                            : Config.colors.text
+                            visualState: deviceRow.isConnected ? Config.states.active : Config.states.default
+                            theme: deviceSurface.resolvedTheme
+                            hovered: deviceSurface.hovered
                         }
 
                         ColumnLayout {
@@ -185,9 +183,7 @@ Item {
                                 text: deviceRow.device
                                 ? (deviceRow.device.name || deviceRow.device.deviceName || "Unknown device")
                                 : ""
-                                color: deviceRow.isConnected
-                                ? Config.ui.selectedForeground
-                                : Config.colors.text
+                                color: deviceSurface.resolvedForegroundColor
                                 font.family: Config.ui.fontFamily
                                 font.pixelSize: Config.quickSettings.bodyFontSize
                                 elide: Text.ElideRight
@@ -212,9 +208,7 @@ Item {
                                     return "Connecting…";
                                     return deviceRow.device.paired ? "Paired" : "Nearby";
                                 }
-                                color: deviceRow.isConnected
-                                ? Config.ui.selectedSecondary
-                                : Config.colors.overlay1
+                                color: deviceSurface.resolvedSecondaryColor
                                 font.family: Config.ui.fontFamily
                                 font.pixelSize: Config.quickSettings.smallFontSize
                                 elide: Text.ElideRight
@@ -226,7 +220,7 @@ Item {
                             actionName: deviceRow.device
                                 ? "Disconnect " + deviceRow.device.name
                                 : "Disconnect Bluetooth device"
-                            onSelectedSurface: deviceRow.isConnected
+                            theme: deviceSurface.resolvedTheme
                             visible: deviceRow.isConnected
                             enabled: root.adapter !== null && root.adapter.enabled
                             onClicked: deviceRow.device.disconnect()
@@ -237,7 +231,7 @@ Item {
                             actionName: deviceRow.device
                                 ? "Forget " + deviceRow.device.name
                                 : "Forget Bluetooth device"
-                            onSelectedSurface: deviceRow.isConnected
+                            theme: deviceSurface.resolvedTheme
                             visible: deviceRow.device !== null && deviceRow.device.paired
                             enabled: visible && !root.forgettingDevice
                             onClicked: root.forgetRequested(deviceRow.device)

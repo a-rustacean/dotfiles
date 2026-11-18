@@ -42,10 +42,136 @@ const ui = {
   animationDuration: 185,
   // 0 = fully transparent, 1 = opaque.
   backgroundOpacity: 0.55,
-  selectedBackground: colors.text,
-  selectedForeground: colors.base,
-  selectedSecondary: colors.surface0,
+  activeBackground: colors.text,
+  activeForeground: colors.base,
+  activeSecondary: colors.surface0,
 };
+
+const states = {
+  // Shared semantic states for surfaces, text, and icons.
+  // Disabled deliberately shares dimmed colors and adds a disabled mark.
+  active: "active",
+  default: "default",
+  dimmed: "dimmed",
+  disabled: "disabled",
+};
+
+const themes = {
+  // Ambient surface theme. The palette also returns its rendered theme for children.
+  light: "light",
+  dark: "dark",
+};
+
+function statePalette(state, theme, hovered, pressed, defaultBackground) {
+  const visualState = state === states.active
+    || state === states.dimmed
+    || state === states.disabled
+    ? state
+    : states.default;
+  const environmentTheme = theme === themes.light ? themes.light : themes.dark;
+  const lightEnvironment = environmentTheme === themes.light;
+  const restingBackground = defaultBackground ?? (
+    lightEnvironment
+      ? colors.subtext1
+      : withAlpha(colors.base, ui.backgroundOpacity)
+  );
+
+  if (lightEnvironment) {
+    if (visualState === states.disabled || visualState === states.dimmed) {
+      return {
+        background: colors.subtext0,
+        foreground: colors.base,
+        secondary: colors.surface0,
+        tertiary: colors.surface1,
+        disabledMark: visualState === states.disabled,
+        theme: themes.light,
+      };
+    }
+
+    if (visualState === states.active) {
+      return {
+        background: pressed
+          ? colors.subtext0
+          : hovered
+            ? colors.subtext1
+            : ui.activeBackground,
+        foreground: colors.base,
+        secondary: colors.surface0,
+        tertiary: colors.surface1,
+        disabledMark: false,
+        theme: themes.light,
+      };
+    }
+
+    return {
+      background: pressed
+        ? colors.subtext0
+        : hovered
+          ? colors.text
+          : restingBackground,
+      foreground: colors.base,
+      secondary: colors.surface0,
+      tertiary: colors.surface1,
+      disabledMark: false,
+      theme: themes.light,
+    };
+  }
+
+  if (visualState === states.disabled || visualState === states.dimmed) {
+    return {
+      background: withAlpha(colors.surface0, ui.backgroundOpacity),
+      foreground: colors.subtext0,
+      secondary: colors.overlay1,
+      tertiary: colors.overlay0,
+      disabledMark: visualState === states.disabled,
+      theme: themes.dark,
+    };
+  }
+
+  if (visualState === states.active) {
+    if (pressed) {
+      return {
+        background: colors.surface1,
+        foreground: colors.text,
+        secondary: colors.subtext1,
+        tertiary: colors.subtext0,
+        disabledMark: false,
+        theme: themes.dark,
+      };
+    }
+    if (hovered) {
+      return {
+        background: colors.surface0,
+        foreground: colors.text,
+        secondary: colors.subtext1,
+        tertiary: colors.subtext0,
+        disabledMark: false,
+        theme: themes.dark,
+      };
+    }
+    return {
+      background: ui.activeBackground,
+      foreground: ui.activeForeground,
+      secondary: ui.activeSecondary,
+      tertiary: colors.overlay1,
+      disabledMark: false,
+      theme: themes.light,
+    };
+  }
+
+  return {
+    background: pressed
+      ? colors.surface1
+      : hovered
+        ? colors.surface0
+        : restingBackground,
+    foreground: colors.text,
+    secondary: colors.subtext0,
+    tertiary: colors.overlay1,
+    disabledMark: false,
+    theme: themes.dark,
+  };
+}
 
 const bar = {
   fontFamily: ui.fontFamily,
@@ -60,7 +186,6 @@ const bar = {
   nowPlayingScrollGap: 20,
   nowPlayingMarkerSize: 4,
   background: withAlpha(colors.base, ui.backgroundOpacity),
-  disabledBackground: withAlpha(colors.surface0, ui.backgroundOpacity),
 };
 
 const launcher = {

@@ -231,7 +231,7 @@ Item {
         Text {
             Layout.fillWidth: true
             text: root.errorMessage
-            color: Config.colors.subtext0
+            color: Config.colors.red
             font.family: Config.ui.fontFamily
             font.pixelSize: Config.quickSettings.smallFontSize
             elide: Text.ElideRight

@@ -239,149 +239,53 @@ RowLayout {
         closeTimer.restart();
     }
 
-    BarItem {
+    QuickSettingsButton {
         id: inputButton
-        implicitWidth: Config.bar.height - Config.bar.margin
+        icon: "󰍬"
+        menuName: "audio-input"
+        accessibleName: "Audio input settings"
+        toggleAction: root.toggleInputMute
+        menuController: root
         visible: root.hasAudioInput
         visualState: root.inputMuted ? Config.states.disabled : Config.states.defaultState
-        highlighted: root.activeMenu === "audio-input"
-        Accessible.role: Accessible.Button
-        Accessible.name: "Audio input settings"
-
-        StatusIcon {
-            anchors.centerIn: parent
-            icon: "󰍬"
-            visualState: inputButton.visualState
-            theme: inputButton.resolvedTheme
-            hovered: inputButton.hovered
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.toggleInputMute()
-        }
-
-        HoverHandler {
-            id: inputHover
-            cursorShape: Qt.PointingHandCursor
-            onHoveredChanged: {
-                if (hovered)
-                    root.showMenu("audio-input", inputButton);
-                else
-                    root.scheduleClose();
-            }
-        }
     }
 
-    BarItem {
+    QuickSettingsButton {
         id: outputButton
-        implicitWidth: Config.bar.height - Config.bar.margin
+        icon: "󰕾"
+        menuName: "audio-output"
+        accessibleName: "Audio output settings"
+        toggleAction: root.toggleOutputMute
+        menuController: root
         visible: root.hasAudioOutput
         visualState: root.outputMuted ? Config.states.disabled : Config.states.defaultState
-        highlighted: root.activeMenu === "audio-output"
-        Accessible.role: Accessible.Button
-        Accessible.name: "Audio output settings"
-
-        StatusIcon {
-            anchors.centerIn: parent
-            icon: "󰕾"
-            visualState: outputButton.visualState
-            theme: outputButton.resolvedTheme
-            hovered: outputButton.hovered
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.toggleOutputMute()
-        }
-
-        HoverHandler {
-            id: outputHover
-            cursorShape: Qt.PointingHandCursor
-            onHoveredChanged: {
-                if (hovered)
-                    root.showMenu("audio-output", outputButton);
-                else
-                    root.scheduleClose();
-            }
-        }
     }
 
-    BarItem {
+    QuickSettingsButton {
         id: bluetoothButton
-        implicitWidth: Config.bar.height - Config.bar.margin
+        icon: "󰂯"
+        menuName: "bluetooth"
+        accessibleName: "Bluetooth settings"
+        toggleAction: root.toggleBluetooth
+        menuController: root
         visible: Bluetooth.defaultAdapter !== null
+        toggleEnabled: root.bluetoothAdapter !== null
         visualState: root.bluetoothAdapter?.enabled
             ? root.bluetoothConnected ? Config.states.active : Config.states.defaultState
             : Config.states.disabled
-        highlighted: root.activeMenu === "bluetooth"
-        Accessible.role: Accessible.Button
-        Accessible.name: "Bluetooth settings"
-
-        StatusIcon {
-            anchors.centerIn: parent
-            icon: "󰂯"
-            visualState: bluetoothButton.visualState
-            theme: bluetoothButton.resolvedTheme
-            hovered: bluetoothButton.hovered
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            enabled: root.bluetoothAdapter !== null
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.toggleBluetooth()
-        }
-
-        HoverHandler {
-            id: bluetoothHover
-            cursorShape: Qt.PointingHandCursor
-            onHoveredChanged: {
-                if (hovered)
-                    root.showMenu("bluetooth", bluetoothButton);
-                else
-                    root.scheduleClose();
-            }
-        }
     }
 
-    BarItem {
+    QuickSettingsButton {
         id: wifiButton
-        implicitWidth: Config.bar.height - Config.bar.margin
+        icon: "󰖩"
+        menuName: "wifi"
+        accessibleName: "Wi-Fi settings"
+        toggleAction: root.toggleWifi
+        menuController: root
         visible: root.hasWifiDevice
         visualState: Networking.wifiEnabled
             ? root.wifiConnected ? Config.states.active : Config.states.defaultState
             : Config.states.disabled
-        highlighted: root.activeMenu === "wifi"
-        Accessible.role: Accessible.Button
-        Accessible.name: "Wi-Fi settings"
-
-        StatusIcon {
-            anchors.centerIn: parent
-            icon: "󰖩"
-            visualState: wifiButton.visualState
-            theme: wifiButton.resolvedTheme
-            hovered: wifiButton.hovered
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.toggleWifi()
-        }
-
-        HoverHandler {
-            id: wifiHover
-            cursorShape: Qt.PointingHandCursor
-            onHoveredChanged: {
-                if (hovered)
-                    root.showMenu("wifi", wifiButton);
-                else
-                    root.scheduleClose();
-            }
-        }
     }
 
     Timer {
@@ -389,8 +293,8 @@ RowLayout {
         interval: 250
         repeat: false
         onTriggered: {
-            if (inputHover.hovered || outputHover.hovered
-                || bluetoothHover.hovered || wifiHover.hovered
+            if (inputButton.hovered || outputButton.hovered
+                || bluetoothButton.hovered || wifiButton.hovered
                 || popupHover.hovered) {
                 return;
             }

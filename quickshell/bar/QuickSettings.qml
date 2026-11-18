@@ -20,8 +20,10 @@ RowLayout {
     property string bluetoothConnectionError: ""
     property bool bluetoothDiscoveryPending: false
     property var bluetoothDiscoveryAdapter: null
+    property var bluetoothDiscoveryOwnerAdapter: null
 
     readonly property var bluetoothAdapter: Bluetooth.defaultAdapter
+    readonly property bool bluetoothMenuOpen: root.activeMenu === "bluetooth"
     readonly property bool hasAudioInput: Pipewire.nodes.values.some(
         node => node.audio !== null && !node.isStream && !node.isSink
     )
@@ -71,6 +73,12 @@ RowLayout {
     }
 
     function ensureBluetoothDiscovery() {
+        if (!root.bluetoothMenuOpen) {
+            root.bluetoothDiscoveryPending = false;
+            root.bluetoothDiscoveryAdapter = null;
+            return;
+        }
+
         const adapter = root.bluetoothAdapter;
         if (!adapter || !adapter.enabled || bluetoothConnectProcess.running) {
             root.bluetoothDiscoveryPending = false;
@@ -89,7 +97,19 @@ RowLayout {
 
         root.bluetoothDiscoveryPending = true;
         root.bluetoothDiscoveryAdapter = adapter;
+        root.bluetoothDiscoveryOwnerAdapter = adapter;
         adapter.discovering = true;
+    }
+
+    function stopBluetoothDiscovery() {
+        const adapter = root.bluetoothAdapter;
+        if (adapter && adapter.discovering
+            && root.bluetoothDiscoveryOwnerAdapter === adapter)
+            adapter.discovering = false;
+
+        root.bluetoothDiscoveryPending = false;
+        root.bluetoothDiscoveryAdapter = null;
+        root.bluetoothDiscoveryOwnerAdapter = null;
     }
 
     function connectBluetoothDevice(device) {
@@ -128,13 +148,19 @@ RowLayout {
         Networking.wifiEnabled = !Networking.wifiEnabled;
     }
 
-    Component.onCompleted: ensureBluetoothDiscovery()
+    onBluetoothMenuOpenChanged: {
+        if (bluetoothMenuOpen)
+            ensureBluetoothDiscovery();
+        else
+            stopBluetoothDiscovery();
+    }
 
     Connections {
         target: Bluetooth
 
         function onDefaultAdapterChanged() {
-            root.ensureBluetoothDiscovery();
+            if (root.bluetoothMenuOpen)
+                root.ensureBluetoothDiscovery();
         }
     }
 
@@ -142,15 +168,22 @@ RowLayout {
         target: root.bluetoothAdapter
 
         function onEnabledChanged() {
-            root.ensureBluetoothDiscovery();
+            if (root.bluetoothMenuOpen)
+                root.ensureBluetoothDiscovery();
+            else
+                root.stopBluetoothDiscovery();
         }
 
         function onDiscoveringChanged() {
             if (root.bluetoothAdapter?.discovering) {
                 root.bluetoothDiscoveryPending = false;
                 root.bluetoothDiscoveryAdapter = null;
-            } else if (root.bluetoothAdapter?.enabled && !bluetoothConnectProcess.running) {
+            } else if (root.bluetoothMenuOpen && root.bluetoothAdapter?.enabled
+                && !bluetoothConnectProcess.running) {
+                root.bluetoothDiscoveryOwnerAdapter = null;
                 Qt.callLater(() => root.ensureBluetoothDiscovery());
+            } else {
+                root.bluetoothDiscoveryOwnerAdapter = null;
             }
         }
     }
@@ -164,19 +197,6 @@ RowLayout {
                 root.bluetoothForgettingDevice = null;
                 device.forget();
             }
-        }
-    }
-
-    Timer {
-        interval: 5000
-        repeat: true
-        running: root.bluetoothAdapter !== null
-            && root.bluetoothAdapter.enabled
-            && !root.bluetoothAdapter.discovering
-            && !bluetoothConnectProcess.running
-        onTriggered: {
-            root.bluetoothDiscoveryPending = false;
-            root.ensureBluetoothDiscovery();
         }
     }
 

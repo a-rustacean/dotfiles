@@ -197,41 +197,35 @@ Item {
         anchors.fill: parent
         spacing: Config.quickSettings.menuSpacing
 
-        RowLayout {
+        ColumnLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: 1
 
-            ColumnLayout {
-                Layout.fillWidth: true
-                spacing: 1
-
-                Text {
-                    text: "Wi-Fi"
-                    color: Config.colors.text
-                    font.family: Config.ui.fontFamily
-                    font.pixelSize: Config.quickSettings.titleFontSize
-                    font.bold: true
-                }
-
-                Text {
-                    text: {
-                        if (!Networking.wifiEnabled)
-                            return "Wi-Fi is off";
-                        const connected = root.networks.find(network => network.connected);
-                        if (connected)
-                            return "";
-                        return root.wifiDevices.length > 0
-                            ? "Not connected"
-                            : "No Wi-Fi adapter";
-                    }
-                    color: Config.colors.overlay1
-                    font.family: Config.ui.fontFamily
-                    font.pixelSize: Config.quickSettings.smallFontSize
-                    elide: Text.ElideRight
-                    visible: text !== ""
-                }
+            Text {
+                text: "Wi-Fi"
+                color: Config.colors.text
+                font.family: Config.ui.fontFamily
+                font.pixelSize: Config.quickSettings.titleFontSize
+                font.bold: true
             }
 
+            Text {
+                text: {
+                    if (!Networking.wifiEnabled)
+                        return "Wi-Fi is off";
+                    const connected = root.networks.find(network => network.connected);
+                    if (connected)
+                        return "";
+                    return root.wifiDevices.length > 0
+                        ? "Not connected"
+                        : "No Wi-Fi adapter";
+                }
+                color: Config.colors.overlay1
+                font.family: Config.ui.fontFamily
+                font.pixelSize: Config.quickSettings.smallFontSize
+                elide: Text.ElideRight
+                visible: text !== ""
+            }
         }
 
         Text {

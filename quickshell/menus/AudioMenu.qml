@@ -108,19 +108,13 @@ Item {
                     }
                     spacing: 4
 
-                    RowLayout {
+                    Text {
                         Layout.fillWidth: true
-                        spacing: 6
-
-                        Text {
-                            Layout.fillWidth: true
-                            text: deviceRow.node.description || deviceRow.node.nickname || deviceRow.node.name
-                            color: deviceRow.resolvedForegroundColor
-                            font.family: Config.ui.fontFamily
-                            font.pixelSize: Config.quickSettings.bodyFontSize
-                            elide: Text.ElideRight
-                        }
-
+                        text: deviceRow.node.description || deviceRow.node.nickname || deviceRow.node.name
+                        color: deviceRow.resolvedForegroundColor
+                        font.family: Config.ui.fontFamily
+                        font.pixelSize: Config.quickSettings.bodyFontSize
+                        elide: Text.ElideRight
                     }
 
                     RowLayout {

@@ -75,22 +75,13 @@ Item {
         anchors.fill: parent
         spacing: 0
 
-        RowLayout {
+        Text {
             Layout.fillWidth: true
-            spacing: 8
-
-            ColumnLayout {
-                Layout.fillWidth: true
-
-                Text {
-                    text: "Bluetooth"
-                    color: Config.colors.text
-                    font.family: Config.ui.fontFamily
-                    font.pixelSize: Config.quickSettings.titleFontSize
-                    font.bold: true
-                }
-            }
-
+            text: "Bluetooth"
+            color: Config.colors.text
+            font.family: Config.ui.fontFamily
+            font.pixelSize: Config.quickSettings.titleFontSize
+            font.bold: true
         }
 
         Text {
